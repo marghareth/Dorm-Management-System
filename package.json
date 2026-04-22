@@ -1,0 +1,32 @@
+{
+  "name": "dorm-management-system",
+  "version": "1.0.0",
+  "description": "A dormitory booking management system for Xanelle-Dorm-Management-System— built with Next.js and PostgreSQL for CMSC 127.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marghareth/Dorm-Management-System.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/marghareth/Dorm-Management-System/issues"
+  },
+  "homepage": "https://github.com/marghareth/Dorm-Management-System#readme",
+  "dependencies": {
+    "next": "^16.2.4",
+    "pg": "^8.20.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
+  }
+}
