@@ -247,24 +247,45 @@
 }
 
 .roomInfo {
-  padding: 1.25rem 1.5rem;
+  padding: 1.5rem;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.roomType {
-  font-size: 0.95rem;
-  font-weight: 500;
+.roomTitle {
+  font-size: 1rem;
+  font-weight: 700;
   color: var(--dark-brown);
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+}
+
+.roomDetails {
+  font-size: 0.8rem;
+  color: var(--gold-light);
+  font-weight: 500;
+  margin: 0;
+}
+
+.priceSection {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
 }
 
 .roomPrice {
+  font-size: 1.5rem;
+  color: var(--dark-brown);
+  font-weight: 700;
+  margin: 0;
+}
+
+.roomDuration {
   font-size: 0.85rem;
   color: var(--olive);
   font-weight: 400;
+  margin: 0;
 }
 
 .roomBadge {
@@ -285,6 +306,30 @@
   color: #842029;
   padding: 0.3rem 0.75rem;
   border-radius: 9999px;
+}
+
+.roomCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.bookBtn {
+  background-color: var(--dark-brown);
+  color: var(--cream);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.bookBtn:hover {
+  background-color: var(--olive);
 }
 
 /* ── Waitlist ── */

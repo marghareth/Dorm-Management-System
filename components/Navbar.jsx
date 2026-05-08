@@ -13,7 +13,6 @@ export default function Navbar() {
         <div className={styles.links}>
           <a href="#features" className={styles.navLink}>Features</a>
           <a href="#rooms" className={styles.navLink}>Rooms</a>
-          <a href="#waitlist" className={styles.navLink}>Join waitlist</a>
         </div>
         <Link href="/login" className={styles.signIn}>Sign in</Link>
       </div>
