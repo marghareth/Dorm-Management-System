@@ -19,10 +19,10 @@ export default function Home() {
             </h1>
             <p className={styles.heroSub}>
               Comfortable, affordable dorm living in a well-managed space.
-              Browse available rooms and join the waitlist today.
+              Browse available rooms and register today.
             </p>
             <div className={styles.heroActions}>
-              <a href="#waitlist" className={styles.btnPrimary}>Join the waitlist</a>
+              <a href="/register" className={styles.btnPrimary}>Register</a>
               <a href="#rooms" className={styles.btnSecondary}>View rooms</a>
             </div>
           </div>
@@ -52,9 +52,9 @@ export default function Home() {
                 </p>
               </div>
               <div className={styles.card}>
-                <h3 className={styles.cardTitle}>Waitlist access</h3>
+                <h3 className={styles.cardTitle}>Quick registration</h3>
                 <p className={styles.cardText}>
-                  Interested? Join the waitlist. Once approved, you'll receive your login credentials directly.
+                  Create your account easily and start booking rooms right away. Our manager will guide you through the process.
                 </p>
               </div>
             </div>
@@ -69,45 +69,63 @@ export default function Home() {
                 <p className={styles.eyebrow}>BROWSE ROOMS</p>
                 <h2 className={styles.roomsHeading}>Current availability</h2>
               </div>
-              <a href="#waitlist" className={styles.btnOutline}>Join waitlist to book</a>
+              <a href="/register" className={styles.btnOutline}>Register to book</a>
             </div>
             <div className={styles.roomGrid}>
               <div className={styles.roomCard}>
                 <div className={styles.roomImagePlaceholder} />
                 <div className={styles.roomInfo}>
-                  <p className={styles.roomType}>Single Room</p>
-                  <p className={styles.roomPrice}>₱3,500 / month</p>
-                  <span className={styles.roomBadge}>Available</span>
+                  <h3 className={styles.roomTitle}>Room 101 — Single</h3>
+                  <p className={styles.roomDetails}>Floor 1 · 1 occupant max</p>
+                  <div className={styles.priceSection}>
+                    <p className={styles.roomPrice}>₱4,500</p>
+                    <p className={styles.roomDuration}>/ month</p>
+                  </div>
+                  <div className={styles.roomCardFooter}>
+                    <span className={styles.roomBadge}>Available</span>
+                    <a href="/bookings" className={styles.bookBtn}>Book now</a>
+                  </div>
                 </div>
               </div>
               <div className={styles.roomCard}>
                 <div className={styles.roomImagePlaceholder} />
                 <div className={styles.roomInfo}>
-                  <p className={styles.roomType}>Double Room</p>
-                  <p className={styles.roomPrice}>₱2,800 / month</p>
+                  <h3 className={styles.roomTitle}>Room 102 — Single</h3>
+                  <p className={styles.roomDetails}>Floor 1 · 1 occupant max</p>
+                  <div className={styles.priceSection}>
+                    <p className={styles.roomPrice}>₱4,500</p>
+                    <p className={styles.roomDuration}>/ month</p>
+                  </div>
                   <span className={styles.roomBadgeOccupied}>Occupied</span>
                 </div>
               </div>
               <div className={styles.roomCard}>
                 <div className={styles.roomImagePlaceholder} />
                 <div className={styles.roomInfo}>
-                  <p className={styles.roomType}>Suite Room</p>
-                  <p className={styles.roomPrice}>₱5,000 / month</p>
-                  <span className={styles.roomBadge}>Available</span>
+                  <h3 className={styles.roomTitle}>Room 103 — Single</h3>
+                  <p className={styles.roomDetails}>Floor 1 · 1 occupant max</p>
+                  <div className={styles.priceSection}>
+                    <p className={styles.roomPrice}>₱4,200</p>
+                    <p className={styles.roomDuration}>/ month</p>
+                  </div>
+                  <div className={styles.roomCardFooter}>
+                    <span className={styles.roomBadge}>Available</span>
+                    <a href="/bookings" className={styles.bookBtn}>Book now</a>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── WAITLIST ── */}
-        <section id="waitlist" className={styles.waitlist}>
+        {/* ── REGISTRATION ── */}
+        <section id="register" className={styles.waitlist}>
           <div className={styles.waitlistInner}>
             <p className={styles.eyebrowGold}>GET STARTED</p>
-            <h2 className={styles.waitlistHeading}>Join the waitlist</h2>
+            <h2 className={styles.waitlistHeading}>Register</h2>
             <p className={styles.waitlistSub}>
-              Fill out the form below. The dorm manager will review your application
-              and send you your login credentials once approved.
+              Create your account below. You'll be able to browse rooms, submit bookings,
+              and manage your profile directly.
             </p>
             <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
               <div className={styles.formRow}>
@@ -154,7 +172,7 @@ export default function Home() {
                 />
               </div>
               <button type="submit" className={styles.submitBtn}>
-                Submit waitlist application →
+                Create Account →
               </button>
             </form>
           </div>
@@ -174,7 +192,7 @@ export default function Home() {
               <p className={styles.footerColTitle}>Navigate</p>
               <a href="#features" className={styles.footerLink}>Features</a>
               <a href="#rooms" className={styles.footerLink}>Rooms</a>
-              <a href="#waitlist" className={styles.footerLink}>Join waitlist</a>
+              <a href="/register" className={styles.footerLink}>Register</a>
             </div>
             <div className={styles.footerCol}>
               <p className={styles.footerColTitle}>Account</p>
