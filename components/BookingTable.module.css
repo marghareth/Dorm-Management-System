@@ -1,0 +1,35 @@
+.wrapper { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.table th {
+  text-align: left; padding: 0.75rem 1rem;
+  background: #f5f0e8; color: var(--olive);
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.table th:first-child { border-radius: 8px 0 0 8px; }
+.table th:last-child  { border-radius: 0 8px 8px 0; }
+.table td { padding: 1rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover td { background: rgba(245,240,232,0.5); }
+.sub { font-size: 0.75rem; color: var(--olive); }
+.dormerLink { color: inherit; text-decoration: none; }
+.dormerLink:hover { text-decoration: underline; }
+.actions { display: flex; gap: 0.5rem; align-items: center; }
+.btnApprove {
+  padding: 4px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 500;
+  background: #d4edda; color: #2d6a4f; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: background 0.2s;
+}
+.btnApprove:hover { background: #b8dfc4; }
+.btnReject {
+  padding: 4px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 500;
+  background: #f8d7da; color: #842029; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: background 0.2s;
+}
+.btnReject:hover { background: #f1bec2; }
+.btnCancel {
+  padding: 4px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 500;
+  background: #fde8cc; color: #7a3b00; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+.na { color: #bbb; font-size: 0.85rem; }
+.empty { color: var(--olive); font-size: 0.9rem; padding: 1.5rem 0; }

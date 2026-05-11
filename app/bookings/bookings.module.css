@@ -1,0 +1,7 @@
+.page { max-width: 1000px; }
+.eyebrow { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 0.4rem; }
+.title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--dark-brown); letter-spacing: -0.02em; margin-bottom: 1.75rem; }
+.header { margin-bottom: 1.75rem; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.loading { color: var(--olive); font-size: 0.9rem; }
+.toast { background: #d4edda; color: #2d6a4f; padding: 0.75rem 1.25rem; border-radius: 10px; font-size: 0.875rem; margin-bottom: 1.25rem; }

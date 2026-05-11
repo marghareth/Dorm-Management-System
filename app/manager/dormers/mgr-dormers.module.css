@@ -1,0 +1,11 @@
+.page { max-width: 1000px; }
+.eyebrow { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 0.4rem; }
+.title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--dark-brown); letter-spacing: -0.02em; }
+.header { margin-bottom: 1.75rem; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: 1rem; border-bottom: 1px solid var(--border); text-align: left; }
+.table th { background: #f5f0e8; color: var(--olive); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.table tr:hover td { background: rgba(245,240,232,0.5); }
+.link { color: var(--dark-brown); text-decoration: none; font-weight: 600; }
+.link:hover { text-decoration: underline; }

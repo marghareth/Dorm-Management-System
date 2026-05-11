@@ -1,0 +1,10 @@
+.page { max-width: 1000px; }
+.eyebrow { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 0.4rem; }
+.title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--dark-brown); letter-spacing: -0.02em; }
+.header { margin-bottom: 1.75rem; }
+.filters { display: flex; gap: 0.6rem; margin-bottom: 1.5rem; }
+.filterBtn { padding: 0.45rem 1rem; border-radius: 9999px; font-size: 0.82rem; font-weight: 500; border: 1.5px solid var(--border); background: transparent; color: var(--olive); cursor: pointer; transition: all 0.2s; font-family: 'DM Sans',sans-serif; }
+.filterBtn:hover { border-color: var(--dark-brown); color: var(--dark-brown); }
+.active { background: var(--dark-brown) !important; color: var(--cream) !important; border-color: var(--dark-brown) !important; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.toast { background: #d4edda; color: #2d6a4f; padding: 0.75rem 1.25rem; border-radius: 10px; font-size: 0.875rem; margin-bottom: 1.25rem; }

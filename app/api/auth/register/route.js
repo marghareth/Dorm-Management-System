@@ -1,57 +1,41 @@
 import { query } from '@/lib/db';
+import { generateToken } from '@/lib/auth';
 
 export async function POST(request) {
   try {
-    const { firstName, lastName, email, password, contactNumber } = await request.json();
+    const { firstName, lastName, email, password, phone, program, yearLevel } = await request.json();
 
-    if (!firstName || !lastName || !email || !password || !contactNumber) {
-      return Response.json(
-        { message: 'All fields are required' },
-        { status: 400 }
-      );
+    if (!firstName || !lastName || !email || !password || !phone) {
+      return Response.json({ message: 'All fields are required' }, { status: 400 });
+    }
+    if (password.length < 6) {
+      return Response.json({ message: 'Password must be at least 6 characters' }, { status: 400 });
     }
 
-    // Check if user already exists
-    const existingUser = await query(
-      'SELECT * FROM users WHERE email = ?',
-      [email]
-    );
-
-    if (existingUser.length > 0) {
-      return Response.json(
-        { message: 'Email already registered' },
-        { status: 409 }
-      );
+    const existing = await query('SELECT user_id FROM users WHERE email = $1', [email]);
+    if (existing.rows.length > 0) {
+      return Response.json({ message: 'Email already registered' }, { status: 409 });
     }
 
-    // Insert new user
-    const result = await query(
-      'INSERT INTO users (first_name, last_name, email, password, contact_number, created_at) VALUES (?, ?, ?, ?, ?, NOW())',
-      [firstName, lastName, email, password, contactNumber]
+    const userResult = await query(
+      `INSERT INTO users (full_name, email, phone, password_hash, role)
+       VALUES ($1, $2, $3, $4, 'dormer') RETURNING user_id`,
+      [`${firstName} ${lastName}`, email, phone, password]
+    );
+    const userId = userResult.rows[0].user_id;
+
+    await query(
+      `INSERT INTO dormers (user_id, program, year_level) VALUES ($1, $2, $3)`,
+      [userId, program || null, yearLevel || null]
     );
 
-    const userId = result.insertId;
-
-    // Generate a simple token (in production, use JWT)
-    const token = Buffer.from(`${userId}:${Date.now()}`).toString('base64');
-
+    const token = generateToken(userId, 'dormer');
     return Response.json(
-      {
-        token,
-        user: {
-          id: userId,
-          email,
-          firstName,
-          lastName,
-        },
-      },
+      { token, user: { userId, fullName: `${firstName} ${lastName}`, email, role: 'dormer' } },
       { status: 201 }
     );
   } catch (error) {
     console.error('Register error:', error);
-    return Response.json(
-      { message: 'An error occurred during registration' },
-      { status: 500 }
-    );
+    return Response.json({ message: 'Registration failed' }, { status: 500 });
   }
 }

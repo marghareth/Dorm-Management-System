@@ -1,0 +1,25 @@
+.overlay {
+  position: fixed; inset: 0; background: rgba(44,32,5,0.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; padding: 1.5rem;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+.box {
+  background: #fff; border-radius: 18px; width: 100%; max-width: 520px;
+  max-height: 88vh; overflow-y: auto;
+  animation: slideUp 0.22s ease;
+  box-shadow: 0 20px 60px rgba(44,32,5,0.2);
+}
+@keyframes slideUp { from { opacity:0; transform: translateY(16px) } to { opacity:1; transform:none } }
+.header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 1.5rem 1.5rem 0;
+}
+.title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--dark-brown); }
+.subtitle { font-size: 0.85rem; color: var(--olive); margin-top: 0.25rem; }
+.close {
+  background: none; border: none; font-size: 1.1rem; color: var(--olive);
+  cursor: pointer; padding: 0.25rem; line-height: 1; margin-top: -0.1rem;
+}
+.body { padding: 1.25rem 1.5rem 1.5rem; }
