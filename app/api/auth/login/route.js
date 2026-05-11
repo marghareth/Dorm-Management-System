@@ -1,56 +1,48 @@
 import { query } from '@/lib/db';
+import { generateToken } from '@/lib/auth';
 
 export async function POST(request) {
   try {
     const { email, password } = await request.json();
 
     if (!email || !password) {
-      return Response.json(
-        { message: 'Email and password are required' },
-        { status: 400 }
-      );
+      return Response.json({ message: 'Email and password are required' }, { status: 400 });
     }
 
-    // Query database for user
     const result = await query(
-      'SELECT * FROM users WHERE email = ?',
+      `SELECT u.user_id, u.full_name, u.email, u.role, u.password_hash,
+              d.dormer_id, d.program, d.year_level
+       FROM users u
+       LEFT JOIN dormers d ON u.user_id = d.user_id
+       WHERE u.email = $1`,
       [email]
     );
 
-    if (result.length === 0) {
-      return Response.json(
-        { message: 'Invalid email or password' },
-        { status: 401 }
-      );
+    if (result.rows.length === 0) {
+      return Response.json({ message: 'Invalid email or password' }, { status: 401 });
     }
 
-    const user = result[0];
+    const user = result.rows[0];
 
-    // For now, simple password validation (in production, use bcrypt)
-    if (user.password !== password) {
-      return Response.json(
-        { message: 'Invalid email or password' },
-        { status: 401 }
-      );
+    if (user.password_hash !== password) {
+      return Response.json({ message: 'Invalid email or password' }, { status: 401 });
     }
 
-    // Generate a simple token (in production, use JWT)
-    const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
-
+    const token = generateToken(user.user_id, user.role);
     return Response.json({
       token,
       user: {
-        id: user.id,
-        email: user.email,
-        firstName: user.first_name,
-        lastName: user.last_name,
+        userId:    user.user_id,
+        fullName:  user.full_name,
+        email:     user.email,
+        role:      user.role,
+        dormerId:  user.dormer_id,
+        program:   user.program,
+        yearLevel: user.year_level,
       },
     });
   } catch (error) {
     console.error('Login error:', error);
-    return Response.json(
-      { message: 'An error occurred during login' },
-      { status: 500 }
-    );
+    return Response.json({ message: 'Login failed' }, { status: 500 });
   }
 }

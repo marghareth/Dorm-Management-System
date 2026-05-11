@@ -1,0 +1,11 @@
+.page { max-width: 1000px; }
+.eyebrow { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 0.4rem; }
+.title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--dark-brown); letter-spacing: -0.02em; }
+.header { margin-bottom: 2rem; }
+.stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 2rem; }
+.statCard { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem 1.5rem; }
+.statNum { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; }
+.statLabel { font-size: 0.78rem; color: var(--olive); margin-top: 0.2rem; }
+.section { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.sectionTitle { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--dark-brown); margin-bottom: 1.25rem; }
+.toast { background: #d4edda; color: #2d6a4f; padding: 0.75rem 1.25rem; border-radius: 10px; font-size: 0.875rem; margin-bottom: 1.25rem; }

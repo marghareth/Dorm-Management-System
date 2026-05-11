@@ -67,8 +67,9 @@ export default function RegisterPage() {
         return;
       }
 
-      // Store token in localStorage
+      // Store token and user info in localStorage
       localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
 
       // Redirect to dashboard
       router.push('/dashboard');

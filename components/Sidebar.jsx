@@ -15,6 +15,7 @@ const MANAGER_LINKS = [
   { href: '/manager/bookings',   label: 'Bookings'  },
   { href: '/manager/rooms',      label: 'Rooms'     },
   { href: '/manager/amenities',  label: 'Amenities' },
+  { href: '/manager/dormers',    label: 'Dormers'   },
 ];
 
 export default function Sidebar({ role = 'dormer' }) {
