@@ -1,0 +1,19 @@
+.page { max-width: 860px; }
+.eyebrow { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 0.4rem; }
+.title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--dark-brown); margin-bottom: 2rem; letter-spacing: -0.02em; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+.statCard { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem 1.5rem; }
+.statNum { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--dark-brown); }
+.statLabel { font-size: 0.78rem; color: var(--olive); margin-top: 0.2rem; }
+.section { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem; }
+.sectionHead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.sectionTitle { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--dark-brown); margin-bottom: 1rem; }
+.viewAll { font-size: 0.82rem; color: var(--gold); text-decoration: none; font-weight: 500; }
+.activeBooking { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--cream); border-radius: 10px; }
+.bookingRoom { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--dark-brown); }
+.bookingMeta { font-size: 0.78rem; color: var(--olive); margin-top: 0.2rem; }
+.bookingRow { display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 0; border-bottom: 1px solid var(--border); }
+.bookingRow:last-child { border-bottom: none; }
+.empty { font-size: 0.9rem; color: var(--olive); }
+.link { color: var(--gold); text-decoration: none; font-weight: 500; }
+.header { margin-bottom: 2rem; }
