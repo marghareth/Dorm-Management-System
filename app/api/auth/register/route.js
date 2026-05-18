@@ -1,5 +1,6 @@
 import { query } from '@/lib/db';
 import { generateToken } from '@/lib/auth';
+import { hashPassword } from '@/lib/password';
 
 export async function POST(request) {
   try {
@@ -17,10 +18,11 @@ export async function POST(request) {
       return Response.json({ message: 'Email already registered' }, { status: 409 });
     }
 
+    const hashedPassword = hashPassword(password);
     const userResult = await query(
       `INSERT INTO users (full_name, email, phone, password_hash, role)
        VALUES ($1, $2, $3, $4, 'dormer') RETURNING user_id`,
-      [`${firstName} ${lastName}`, email, phone, password]
+      [`${firstName} ${lastName}`, email, phone, hashedPassword]
     );
     const userId = userResult.rows[0].user_id;
 

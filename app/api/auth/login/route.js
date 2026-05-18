@@ -1,5 +1,6 @@
 import { query } from '@/lib/db';
 import { generateToken } from '@/lib/auth';
+import { verifyPassword } from '@/lib/password';
 
 export async function POST(request) {
   try {
@@ -24,7 +25,7 @@ export async function POST(request) {
 
     const user = result.rows[0];
 
-    if (user.password_hash !== password) {
+    if (!verifyPassword(password, user.password_hash)) {
       return Response.json({ message: 'Invalid email or password' }, { status: 401 });
     }
 
