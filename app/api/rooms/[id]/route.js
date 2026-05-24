@@ -44,3 +44,31 @@ export async function POST(request) {
     return Response.json({ message: 'Failed to add room' }, { status: 500 });
   }
 }
+
+export async function PUT(request, { params }) {
+  try {
+    const roomId = params.id;
+    const { price, capacity, status } = await request.json();
+
+    await query(
+      `UPDATE rooms SET price = $1, capacity = $2, status = $3 WHERE room_id = $4`,
+      [price, capacity, status, roomId]
+    );
+
+    return Response.json({ message: 'Room updated successfully' });
+  } catch (error) {
+    console.error(error);
+    return Response.json({ message: 'Failed to update room' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request, { params }) {
+  try {
+    const roomId = params.id;
+    await query('DELETE FROM rooms WHERE room_id = $1', [roomId]);
+    return Response.json({ message: 'Room deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    return Response.json({ message: 'Failed to delete room' }, { status: 500 });
+  }
+}

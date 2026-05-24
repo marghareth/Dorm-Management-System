@@ -1,3 +1,21 @@
-.wrap { display: flex; min-height: 100vh; }
-.main { flex: 1; padding: 2.25rem 2.5rem; overflow-y: auto; background: var(--cream); }
-@media (max-width: 768px) { .main { padding: 1.5rem; } }
+.wrap { 
+  display: flex; 
+  min-height: 100vh; 
+  position: relative;
+}
+
+.main { 
+  flex: 1; 
+  padding: 2.25rem 2.5rem; 
+  overflow-y: auto; 
+  background: var(--cream); 
+  transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 1.5rem;
+  }
+}
+
+
