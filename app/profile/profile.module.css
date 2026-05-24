@@ -1,7 +1,28 @@
-.page { max-width: 540px; }
-.eyebrow { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 0.4rem; }
-.title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--dark-brown); letter-spacing: -0.02em; margin-bottom: 1.75rem; }
-.header { margin-bottom: 1.75rem; }
+.page {
+  max-width: 540px;
+  width: 100%;
+  margin: 0 auto;
+}
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 0.4rem;
+}
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--dark-brown);
+  letter-spacing: -0.02em;
+  margin-bottom: 1.75rem;
+}
+.header {
+  margin: 0 auto 1.75rem;
+  text-align: center;
+}
 .card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 2rem; }
 .avatar { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--cream); border-radius: 10px; margin-bottom: 1.75rem; }
 .avatarCircle { width: 48px; height: 48px; border-radius: 50%; background: var(--dark-brown); color: var(--cream); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display',serif; font-size: 1.2rem; font-weight: 700; flex-shrink: 0; }

@@ -13,7 +13,9 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    contactNumber: '',
+    phone: '',
+    program: '',
+    yearLevel: '',
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +57,9 @@ export default function RegisterPage() {
           lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
-          contactNumber: formData.contactNumber,
+          phone: formData.phone,
+          program: formData.program,
+          yearLevel: formData.yearLevel,
         }),
       });
 
@@ -132,13 +136,43 @@ export default function RegisterPage() {
             <label className={styles.label}>Contact Number</label>
             <input
               type="tel"
-              name="contactNumber"
+              name="phone"
               className={styles.input}
               placeholder="09XX-XXX-XXXX"
-              value={formData.contactNumber}
+              value={formData.phone}
               onChange={handleChange}
               required
             />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Program</label>
+            <input
+              type="text"
+              name="program"
+              className={styles.input}
+              placeholder="e.g. BS Computer Science"
+              value={formData.program}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Year Level</label>
+            <select
+              name="yearLevel"
+              className={styles.input}
+              value={formData.yearLevel}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select year level</option>
+              <option value="1st Year">1st Year</option>
+              <option value="2nd Year">2nd Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+            </select>
           </div>
 
           <div className={styles.formGroup}>

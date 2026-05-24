@@ -64,15 +64,18 @@ export default function RoomsPage() {
         )}
 
         <div className={styles.filters}>
-          {['all', '1', '2'].map(f => (
-            <button
-              key={f}
-              className={`${styles.filterBtn} ${floor === f ? styles.active : ''}`}
-              onClick={() => handleFloor(f)}
+          <label className={styles.filterLabel}>
+            Show:
+            <select
+              className={styles.floorSelect}
+              value={floor}
+              onChange={(e) => handleFloor(e.target.value)}
             >
-              {f === 'all' ? 'All floors' : `Floor ${f}`}
-            </button>
-          ))}
+              <option value="all">All floors</option>
+              <option value="1">Floor 1</option>
+              <option value="2">Floor 2</option>
+            </select>
+          </label>
         </div>
 
         {rooms.length === 0
