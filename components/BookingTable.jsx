@@ -25,7 +25,7 @@ export default function BookingTable({ bookings, isManager, onApprove, onReject,
         </thead>
         <tbody>
           {bookings.map((b) => {
-            const dormerId = b.dormer_id || b.dormerId;
+            const dormerId = b.dormer_id || b.dormerId || b.user_id || b.userId;
             const dormerName = b.full_name || b.dormer_name || b.dormerName || 'Unknown';
             const checkIn = b.check_in || b.checkIn ? new Date(b.check_in || b.checkIn).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
             const checkOut = b.check_out || b.checkOut ? new Date(b.check_out || b.checkOut).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
@@ -45,8 +45,6 @@ export default function BookingTable({ bookings, isManager, onApprove, onReject,
                         dormerName
                       )}
                     </strong>
-                    <br />
-                    <span className={styles.sub}>{b.program || b.year_level || b.program || b.yearLevel ? `${b.program || ''}${(b.program && (b.year_level || b.yearLevel)) ? ' · ' : ''}${b.year_level || b.yearLevel || ''}` : ''}</span>
                   </td>
                 )}
                 <td>

@@ -1,4 +1,4 @@
-import { query } from '@/lib/db';
+import { getSupabaseServer } from '@/lib/supabase';
 import { generateToken } from '@/lib/auth';
 import { verifyPassword } from '@/lib/password';
 
@@ -10,37 +10,32 @@ export async function POST(request) {
       return Response.json({ message: 'Email and password are required' }, { status: 400 });
     }
 
-    const result = await query(
-      `SELECT u.user_id, u.full_name, u.email, u.role, u.password_hash,
-              d.dormer_id, d.program, d.year_level
-       FROM users u
-       LEFT JOIN dormers d ON u.user_id = d.user_id
-       WHERE u.email = $1`,
-      [email]
-    );
+    const supabase = getSupabaseServer();
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('user_id, fname, mname, lname, email, password_hash')
+      .eq('email', email)
+      .maybeSingle();
 
-    if (result.rows.length === 0) {
+    if (error || !user) {
       return Response.json({ message: 'Invalid email or password' }, { status: 401 });
     }
-
-    const user = result.rows[0];
 
     if (!verifyPassword(password, user.password_hash)) {
       return Response.json({ message: 'Invalid email or password' }, { status: 401 });
     }
 
-    const token = generateToken(user.user_id, user.role);
+    const fullName = user.mname
+      ? `${user.fname} ${user.mname} ${user.lname}`
+      : `${user.fname} ${user.lname}`;
+
+    const managerEmail = process.env.MANAGER_EMAIL || 'manager@xanelledorms.com';
+    const role = user.email === managerEmail ? 'manager' : 'dormer';
+
+    const token = generateToken(user.user_id);
     return Response.json({
       token,
-      user: {
-        userId:    user.user_id,
-        fullName:  user.full_name,
-        email:     user.email,
-        role:      user.role,
-        dormerId:  user.dormer_id,
-        program:   user.program,
-        yearLevel: user.year_level,
-      },
+      user: { userId: user.user_id, fullName, email: user.email, role },
     });
   } catch (error) {
     console.error('Login error:', error);

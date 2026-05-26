@@ -4,9 +4,9 @@ import DashLayout from '@/components/DashLayout';
 import styles from './mgr-dormers.module.css';
 
 const dormers = [
-  { dormer_id: 1, full_name: 'Juan dela Cruz', email: 'juan@example.com', program: 'BS Computer Science', year_level: '2nd Year', phone: '0917-123-4567' },
-  { dormer_id: 2, full_name: 'Ana Santos', email: 'ana@example.com', program: 'BS Nursing', year_level: '3rd Year', phone: '0917-234-5678' },
-  { dormer_id: 3, full_name: 'Mark Reyes', email: 'mark@example.com', program: 'BS Business Administration', year_level: '1st Year', phone: '0917-345-6789' },
+  { dormer_id: 1, full_name: 'Juan dela Cruz', email: 'juan@example.com', phone: '0917-123-4567' },
+  { dormer_id: 2, full_name: 'Ana Santos', email: 'ana@example.com', phone: '0917-234-5678' },
+  { dormer_id: 3, full_name: 'Mark Reyes', email: 'mark@example.com', phone: '0917-345-6789' },
 ];
 
 const activeBookings = [
@@ -27,12 +27,10 @@ export default function ManagerDormers() {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Program</th>
-                <th>Year</th>
-                <th>Contact</th>
-                <th>Status</th>
-              </tr>
+                  <th>Name</th>
+                  <th>Contact</th>
+                  <th>Status</th>
+                </tr>
             </thead>
             <tbody>
               {dormers.map((d) => {
@@ -44,8 +42,6 @@ export default function ManagerDormers() {
                         {d.full_name}
                       </Link>
                     </td>
-                    <td>{d.program}</td>
-                    <td>{d.year_level}</td>
                     <td>{d.phone}</td>
                     <td>{booking ? `Room ${booking.room_number} · Occupied` : 'No active room'}</td>
                   </tr>

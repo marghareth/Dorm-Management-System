@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import styles from './BookingForm.module.css';
 
-export default function BookingForm({ room, dormerId, onSuccess, onCancel }) {
+export default function BookingForm({ room, userId, onSuccess, onCancel }) {
   const [form, setForm] = useState({
     checkIn: '', checkOut: '', numMonths: 1, numOccupants: 1, specialRequests: '',
   });
@@ -20,7 +20,7 @@ export default function BookingForm({ room, dormerId, onSuccess, onCancel }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          dormerId, roomId: room.room_id,
+          userId, roomId: room.room_id,
           checkIn: form.checkIn, checkOut: form.checkOut,
           numMonths: parseInt(form.numMonths),
           numOccupants: parseInt(form.numOccupants),

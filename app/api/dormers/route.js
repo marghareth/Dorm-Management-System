@@ -1,16 +1,18 @@
-import { query } from '@/lib/db';
+import { getSupabaseServer } from '@/lib/supabase';
 
 export async function GET() {
   try {
-    const result = await query(
-      `SELECT u.user_id, u.full_name, u.email, u.phone, u.created_at,
-              d.dormer_id, d.program, d.year_level
-       FROM users u
-       JOIN dormers d ON u.user_id = d.user_id
-       WHERE u.role = 'dormer'
-       ORDER BY u.full_name`
-    );
-    return Response.json(result.rows);
+    const supabase = getSupabaseServer();
+    const { data, error } = await supabase
+      .from('users')
+      .select(`
+        user_id, fname, mname, lname, email, phone, created_at,
+        emergency_contacts (contact_id, contact_name, contact_phone, relationship)
+      `)
+      .order('lname');
+
+    if (error) throw error;
+    return Response.json(data);
   } catch (error) {
     console.error(error);
     return Response.json({ message: 'Failed to fetch dormers' }, { status: 500 });

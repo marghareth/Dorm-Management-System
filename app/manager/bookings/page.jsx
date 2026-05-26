@@ -6,9 +6,9 @@ import styles from './mgr-bookings.module.css';
 
 export default function ManagerBookings() {
   const [bookings, setBookings] = useState([
-    { booking_id: 1, dormer_id: 1, full_name: 'Juan dela Cruz', program: 'BS Computer Science', year_level: '2nd Year', room_number: '101', type: 'Single', floor: 1, status: 'pending', check_in: '2026-06-01', check_out: '2026-12-01', num_months: 6, num_occupants: 1 },
-    { booking_id: 2, dormer_id: 2, full_name: 'Ana Santos', program: 'BS Nursing', year_level: '3rd Year', room_number: '204', type: 'Double', floor: 2, status: 'approved', check_in: '2026-06-10', check_out: '2027-01-10', num_months: 7, num_occupants: 2 },
-    { booking_id: 3, dormer_id: 3, full_name: 'Mark Reyes', program: 'BS Business Administration', year_level: '1st Year', room_number: '305', type: 'Single', floor: 3, status: 'rejected', check_in: '2026-05-10', check_out: '2026-08-10', num_months: 3, num_occupants: 1 },
+    { booking_id: 1, dormer_id: 1, full_name: 'Juan dela Cruz', room_number: '101', type: 'Single', floor: 1, status: 'pending', check_in: '2026-06-01', check_out: '2026-12-01', num_months: 6, num_occupants: 1 },
+    { booking_id: 2, dormer_id: 2, full_name: 'Ana Santos', room_number: '204', type: 'Double', floor: 2, status: 'approved', check_in: '2026-06-10', check_out: '2027-01-10', num_months: 7, num_occupants: 2 },
+    { booking_id: 3, dormer_id: 3, full_name: 'Mark Reyes', room_number: '305', type: 'Single', floor: 3, status: 'rejected', check_in: '2026-05-10', check_out: '2026-08-10', num_months: 3, num_occupants: 1 },
   ]);
   const [filter, setFilter]     = useState('all');
   const [msg, setMsg]           = useState('');

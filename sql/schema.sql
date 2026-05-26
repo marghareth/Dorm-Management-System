@@ -1,21 +1,23 @@
--- Create users table
+-- Create users table (person and dormer are the same entity)
 CREATE TABLE IF NOT EXISTS users (
   user_id SERIAL PRIMARY KEY,
-  full_name VARCHAR(255) NOT NULL,
+  fname VARCHAR(100) NOT NULL,
+  mname VARCHAR(100),
+  lname VARCHAR(100) NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
   phone VARCHAR(20),
   password_hash VARCHAR(255) NOT NULL,
-  role VARCHAR(50) NOT NULL DEFAULT 'dormer',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create dormers table
-CREATE TABLE IF NOT EXISTS dormers (
-  dormer_id SERIAL PRIMARY KEY,
-  user_id INTEGER UNIQUE NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-  program VARCHAR(100),
-  year_level VARCHAR(50),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- Create emergency_contacts table (weak entity of users)
+CREATE TABLE IF NOT EXISTS emergency_contacts (
+  contact_id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  contact_name VARCHAR(255) NOT NULL,
+  contact_phone VARCHAR(20) NOT NULL,
+  relationship VARCHAR(100),
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 -- Create rooms table
@@ -34,32 +36,38 @@ CREATE TABLE IF NOT EXISTS rooms (
 CREATE TABLE IF NOT EXISTS amenities (
   amenity_id SERIAL PRIMARY KEY,
   name VARCHAR(100) UNIQUE NOT NULL,
+  description VARCHAR(500),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create room_amenities junction table
 CREATE TABLE IF NOT EXISTS room_amenities (
-  room_id INTEGER NOT NULL REFERENCES rooms(room_id) ON DELETE CASCADE,
-  amenity_id INTEGER NOT NULL REFERENCES amenities(amenity_id) ON DELETE CASCADE,
-  PRIMARY KEY (room_id, amenity_id)
+  room_id INTEGER NOT NULL,
+  amenity_id INTEGER NOT NULL,
+  quantity INTEGER DEFAULT 1,
+  PRIMARY KEY (room_id, amenity_id),
+  FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE,
+  FOREIGN KEY (amenity_id) REFERENCES amenities(amenity_id) ON DELETE CASCADE
 );
 
 -- Create bookings table
 CREATE TABLE IF NOT EXISTS bookings (
   booking_id SERIAL PRIMARY KEY,
-  dormer_id INTEGER NOT NULL REFERENCES dormers(dormer_id) ON DELETE CASCADE,
-  room_id INTEGER NOT NULL REFERENCES rooms(room_id) ON DELETE CASCADE,
+  user_id INTEGER NOT NULL,
+  room_id INTEGER NOT NULL,
   check_in DATE NOT NULL,
   check_out DATE NOT NULL,
   num_months INTEGER NOT NULL,
   num_occupants INTEGER NOT NULL,
   special_requests TEXT,
   status VARCHAR(50) DEFAULT 'pending',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE
 );
 
--- Create indexes for better query performance
-CREATE INDEX IF NOT EXISTS idx_dormers_user_id ON dormers(user_id);
-CREATE INDEX IF NOT EXISTS idx_bookings_dormer_id ON bookings(dormer_id);
+-- Indexes for better query performance
+CREATE INDEX IF NOT EXISTS idx_bookings_user_id ON bookings(user_id);
 CREATE INDEX IF NOT EXISTS idx_bookings_room_id ON bookings(room_id);
 CREATE INDEX IF NOT EXISTS idx_rooms_floor ON rooms(floor);
+CREATE INDEX IF NOT EXISTS idx_emergency_contacts_user_id ON emergency_contacts(user_id);

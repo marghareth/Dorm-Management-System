@@ -9,25 +9,20 @@ import styles from './rooms.module.css';
 
 export default function RoomsPage() {
   const router = useRouter();
-  const mockUser = { fullName: 'Juan dela Cruz', dormerId: 1, role: 'dormer', email: 'juan@example.com' };
-  const mockRooms = [
-    { room_id: 101, room_number: '101', type: 'Single', floor: 1, price: 4500, status: 'available' },
-    { room_id: 204, room_number: '204', type: 'Double', floor: 2, price: 7000, status: 'available' },
-    { room_id: 302, room_number: '302', type: 'Single', floor: 3, price: 4200, status: 'available' },
-  ];
-  const [user, setUser]       = useState(mockUser);
-  const [rooms, setRooms]     = useState(mockRooms);
+  const [user, setUser]       = useState(null);
+  const [rooms, setRooms]     = useState([]);
   const [floor, setFloor]     = useState('all');
   const [selected, setSelected] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  // useEffect(() => {
-  //   const token  = localStorage.getItem('token');
-  //   const stored = localStorage.getItem('user');
-  //   if (!token || !stored) { router.push('/login'); return; }
-  //   setUser(JSON.parse(stored));
-  //   fetchRooms('all');
-  // }, []);
+  useEffect(() => {
+    const token  = localStorage.getItem('token');
+    const stored = localStorage.getItem('user');
+    if (!token || !stored) { router.push('/login'); return; }
+    const u = JSON.parse(stored);
+    setUser(u);
+    fetchRooms('all');
+  }, [router]);
 
   const fetchRooms = (f) => {
     const url = f === 'all' ? '/api/rooms' : `/api/rooms?floor=${f}`;
@@ -82,7 +77,7 @@ export default function RoomsPage() {
           ? <p className={styles.empty}>No rooms found.</p>
           : (
             <div className={styles.grid}>
-              {rooms.map(r => <RoomCard key={r.room_id} room={r} onBook={handleBook} />)}
+                  {rooms.map(r => <RoomCard key={r.room_id} room={r} onBook={handleBook} />)}
             </div>
           )
         }
@@ -94,12 +89,12 @@ export default function RoomsPage() {
           subtitle="Fill in your details to submit a booking request"
           onClose={() => setSelected(null)}
         >
-          <BookingForm
-            room={selected}
-            dormerId={user.dormerId}
-            onSuccess={handleSuccess}
-            onCancel={() => setSelected(null)}
-          />
+              <BookingForm
+                room={selected}
+                userId={user.userId}
+                onSuccess={handleSuccess}
+                onCancel={() => setSelected(null)}
+              />
         </Modal>
       )}
     </DashLayout>
