@@ -6,23 +6,22 @@ import styles from './profile.module.css';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const mockUser = { fullName: 'Juan dela Cruz', email: 'juan@example.com', userId: 1 };
-  const [user, setUser]   = useState(mockUser);
-  const [form, setForm]   = useState({ phone: '0917-123-4567', program: 'BS Computer Science', yearLevel: '2nd Year' });
+  const [user, setUser]   = useState(null);
+  const [form, setForm]   = useState({ phone: '0917-123-4567' });
   const [msg, setMsg]     = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   const token  = localStorage.getItem('token');
-  //   const stored = localStorage.getItem('user');
-  //   if (!token || !stored) { router.push('/login'); return; }
-  //   const u = JSON.parse(stored);
-  //   setUser(u);
-  //   fetch(`/api/dormers/${u.userId}`)
-  //     .then(r => r.json())
-  //     .then(d => setForm({ phone: d.phone || '', program: d.program || '', yearLevel: d.year_level || '' }));
-  // }, []);
+  useEffect(() => {
+    const token  = localStorage.getItem('token');
+    const stored = localStorage.getItem('user');
+    if (!token || !stored) { router.push('/login'); return; }
+    const u = JSON.parse(stored);
+    setUser(u);
+    fetch(`/api/dormers/${u.userId}`)
+      .then(r => r.json())
+      .then(d => setForm({ phone: d.phone || '' }));
+  }, [router]);
 
   const handle = (e) => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
 
@@ -73,17 +72,6 @@ export default function ProfilePage() {
             <div className={styles.group}>
               <label className={styles.label}>Phone number</label>
               <input className={styles.input} name="phone" value={form.phone} onChange={handle} placeholder="09XX-XXX-XXXX" />
-            </div>
-            <div className={styles.group}>
-              <label className={styles.label}>Program</label>
-              <input className={styles.input} name="program" value={form.program} onChange={handle} placeholder="e.g. BS Computer Science" />
-            </div>
-            <div className={styles.group}>
-              <label className={styles.label}>Year level</label>
-              <select className={styles.input} name="yearLevel" value={form.yearLevel} onChange={handle}>
-                <option value="">Select year level</option>
-                {['1st Year','2nd Year','3rd Year','4th Year'].map(y => <option key={y}>{y}</option>)}
-              </select>
             </div>
             <div className={styles.actions}>
               <button type="submit" className={styles.btnSave} disabled={loading}>

@@ -14,8 +14,6 @@ export default function RegisterPage() {
     password: '',
     confirmPassword: '',
     phone: '',
-    program: '',
-    yearLevel: '',
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -58,8 +56,6 @@ export default function RegisterPage() {
           email: formData.email,
           password: formData.password,
           phone: formData.phone,
-          program: formData.program,
-          yearLevel: formData.yearLevel,
         }),
       });
 
@@ -71,12 +67,12 @@ export default function RegisterPage() {
         return;
       }
 
-      // Store token and user info in localStorage
+      // Store token and user info in localStorage (include phone for next step)
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('user', JSON.stringify({ ...data.user, phone: formData.phone }));
 
-      // Redirect to dashboard
-      router.push('/dashboard');
+      // Redirect to emergency contact flow
+      router.push('/emergency-contact');
     } catch (err) {
       setError('An error occurred. Please try again.');
       setIsLoading(false);
@@ -143,36 +139,6 @@ export default function RegisterPage() {
               onChange={handleChange}
               required
             />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Program</label>
-            <input
-              type="text"
-              name="program"
-              className={styles.input}
-              placeholder="e.g. BS Computer Science"
-              value={formData.program}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Year Level</label>
-            <select
-              name="yearLevel"
-              className={styles.input}
-              value={formData.yearLevel}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select year level</option>
-              <option value="1st Year">1st Year</option>
-              <option value="2nd Year">2nd Year</option>
-              <option value="3rd Year">3rd Year</option>
-              <option value="4th Year">4th Year</option>
-            </select>
           </div>
 
           <div className={styles.formGroup}>

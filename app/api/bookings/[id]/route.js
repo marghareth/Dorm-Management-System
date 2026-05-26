@@ -1,15 +1,18 @@
-import { query } from '@/lib/db';
+import { getSupabaseServer } from '@/lib/supabase';
 
 export async function PUT(request, { params }) {
   try {
-    const bookingId = params.id;
+    const supabase = getSupabaseServer();
     const { status } = await request.json();
 
-    if (!status) {
-      return Response.json({ message: 'Status is required' }, { status: 400 });
-    }
+    if (!status) return Response.json({ message: 'Status is required' }, { status: 400 });
 
-    await query('UPDATE bookings SET status = $1 WHERE booking_id = $2', [status, bookingId]);
+    const { error } = await supabase
+      .from('bookings')
+      .update({ status })
+      .eq('booking_id', params.id);
+
+    if (error) throw error;
     return Response.json({ message: 'Booking status updated' });
   } catch (error) {
     console.error(error);
@@ -19,8 +22,9 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    const bookingId = params.id;
-    await query('DELETE FROM bookings WHERE booking_id = $1', [bookingId]);
+    const supabase = getSupabaseServer();
+    const { error } = await supabase.from('bookings').delete().eq('booking_id', params.id);
+    if (error) throw error;
     return Response.json({ message: 'Booking deleted' });
   } catch (error) {
     console.error(error);

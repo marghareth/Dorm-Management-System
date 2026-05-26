@@ -5,15 +5,15 @@ import DashLayout from '@/components/DashLayout';
 import styles from '../mgr-dormers.module.css';
 
 const dormersData = [
-  { dormer_id: 1, full_name: 'Juan dela Cruz', email: 'juan@example.com', program: 'BS Computer Science', year_level: '2nd Year', phone: '0917-123-4567' },
-  { dormer_id: 2, full_name: 'Ana Santos', email: 'ana@example.com', program: 'BS Nursing', year_level: '3rd Year', phone: '0917-234-5678' },
-  { dormer_id: 3, full_name: 'Mark Reyes', email: 'mark@example.com', program: 'BS Business Administration', year_level: '1st Year', phone: '0917-345-6789' },
+  { dormer_id: 1, full_name: 'Juan dela Cruz', email: 'juan@example.com', phone: '0917-123-4567' },
+  { dormer_id: 2, full_name: 'Ana Santos', email: 'ana@example.com', phone: '0917-234-5678' },
+  { dormer_id: 3, full_name: 'Mark Reyes', email: 'mark@example.com', phone: '0917-345-6789' },
 ];
 
 const bookingsData = [
-  { dormer_id: 1, full_name: 'Juan dela Cruz', program: 'BS Computer Science', year_level: '2nd Year', room_number: '101', status: 'pending', check_in: '2026-06-01', check_out: '2026-12-01' },
-  { dormer_id: 2, full_name: 'Ana Santos', program: 'BS Nursing', year_level: '3rd Year', room_number: '204', status: 'approved', check_in: '2026-06-10', check_out: '2027-01-10' },
-  { dormer_id: 3, full_name: 'Mark Reyes', program: 'BS Business Administration', year_level: '1st Year', room_number: '305', status: 'rejected', check_in: '2026-05-10', check_out: '2026-08-10' },
+  { dormer_id: 1, full_name: 'Juan dela Cruz', room_number: '101', status: 'pending', check_in: '2026-06-01', check_out: '2026-12-01' },
+  { dormer_id: 2, full_name: 'Ana Santos', room_number: '204', status: 'approved', check_in: '2026-06-10', check_out: '2027-01-10' },
+  { dormer_id: 3, full_name: 'Mark Reyes', room_number: '305', status: 'rejected', check_in: '2026-05-10', check_out: '2026-08-10' },
 ];
 
 export default function DormerDetailPage() {
@@ -31,8 +31,6 @@ export default function DormerDetailPage() {
         full_name: bookingData.full_name || 'Unknown',
         email: 'N/A',
         phone: 'N/A',
-        program: bookingData.program || 'N/A',
-        year_level: bookingData.year_level || 'N/A',
       };
     }
   }
@@ -62,8 +60,8 @@ export default function DormerDetailPage() {
         <div className={styles.card}>
           <p><strong>Email:</strong> {dormer.email}</p>
           <p><strong>Phone:</strong> {dormer.phone}</p>
-          <p><strong>Program:</strong> {dormer.program}</p>
-          <p><strong>Year Level:</strong> {dormer.year_level}</p>
+          <p><strong>Program:</strong> N/A</p>
+          <p><strong>Year Level:</strong> N/A</p>
           <div style={{ marginTop: '1rem' }}>
             <h2 style={{ marginBottom: '0.5rem' }}>Current booking</h2>
             {activeBooking ? (

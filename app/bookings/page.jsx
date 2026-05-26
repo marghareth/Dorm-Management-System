@@ -7,26 +7,21 @@ import styles from './bookings.module.css';
 
 export default function BookingsPage() {
   const router = useRouter();
-  const mockUser = { fullName: 'Juan dela Cruz', dormerId: 1, role: 'dormer', email: 'juan@example.com' };
-  const mockBookings = [
-    { booking_id: 1, room_number: '101', type: 'Single', floor: 1, status: 'approved', check_in: '2026-06-01' },
-    { booking_id: 2, room_number: '204', type: 'Double', floor: 2, status: 'pending', check_in: '2026-07-15' },
-    { booking_id: 3, room_number: '105', type: 'Single', floor: 1, status: 'rejected', check_in: '2026-05-10' },
-  ];
-  const [user, setUser]         = useState(mockUser);
-  const [bookings, setBookings] = useState(mockBookings);
+  const [user, setUser]         = useState(null);
+  const [bookings, setBookings] = useState([]);
   const [loading, setLoading]   = useState(false);
   const [msg, setMsg]           = useState('');
 
-  // useEffect(() => {
-  //   const token  = localStorage.getItem('token');
-  //   const stored = localStorage.getItem('user');
-  //   if (!token || !stored) { router.push('/login'); return; }
-  //   const u = JSON.parse(stored);
-  //   setUser(u);
-  //   fetch(`/api/bookings?dormer_id=${u.dormerId}`)
-  //     .then(r => r.json()).then(d => { setBookings(d); setLoading(false); });
-  // }, []);
+  useEffect(() => {
+    const token  = localStorage.getItem('token');
+    const stored = localStorage.getItem('user');
+    if (!token || !stored) { router.push('/login'); return; }
+    const u = JSON.parse(stored);
+    setUser(u);
+    fetch(`/api/bookings?user_id=${u.userId}`)
+      .then(r => r.json()).then(d => { setBookings(Array.isArray(d) ? d.map(row => ({ ...row, full_name: row.fname ? `${row.fname}${row.mname ? ' ' + row.mname : ''} ${row.lname}` : undefined, dormer_id: row.user_id })) : []); setLoading(false); })
+      .catch(() => { setBookings([]); setLoading(false); });
+  }, [router]);
 
   const handleCancel = async (id) => {
     if (!confirm('Cancel this booking?')) return;

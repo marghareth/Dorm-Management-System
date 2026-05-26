@@ -7,46 +7,35 @@ import styles from './dashboard.module.css';
 
 export default function DormerDashboard() {
   const router = useRouter();
-  const mockUser = { fullName: 'Juan dela Cruz', dormerId: 1, role: 'dormer', email: 'juan@example.com' };
-  const mockBookings = [
-    { booking_id: 1, room_number: '101', type: 'Single', floor: 1, status: 'approved', check_in: '2026-06-01', num_months: 6, num_occupants: 1 },
-    { booking_id: 2, room_number: '204', type: 'Double', floor: 2, status: 'pending', check_in: '2026-07-15', num_months: 5, num_occupants: 2 },
-    { booking_id: 3, room_number: '106', type: 'Single', floor: 1, status: 'rejected', check_in: '2026-05-10', num_months: 3, num_occupants: 1 },
-  ];
-  const mockRooms = [
-    { room_id: 101, room_number: '101', type: 'Single', floor: 1, price: 4500, status: 'available' },
-    { room_id: 204, room_number: '204', type: 'Double', floor: 2, price: 7000, status: 'available' },
-    { room_id: 105, room_number: '105', type: 'Single', floor: 1, price: 4200, status: 'available' },
-  ];
-  const [user, setUser]         = useState(mockUser);
-  const [bookings, setBookings] = useState(mockBookings);
-  const [rooms, setRooms]       = useState(mockRooms);
+  const [user, setUser]         = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [rooms, setRooms]       = useState([]);
 
-  // useEffect(() => {
-  //   const stored = localStorage.getItem('user');
-  //   const token  = localStorage.getItem('token');
-  //   if (!token || !stored) {
-  //     router.push('/login');
-  //     return;
-  //   }
+  useEffect(() => {
+    const stored = localStorage.getItem('user');
+    const token  = localStorage.getItem('token');
+    if (!token || !stored) {
+      router.push('/login');
+      return;
+    }
 
-  //   const u = JSON.parse(stored);
-  //   if (u.role === 'manager') {
-  //     router.push('/manager/dashboard');
-  //     return;
-  //   }
+    const u = JSON.parse(stored);
+    if (u.role === 'manager') {
+      router.push('/manager/dashboard');
+      return;
+    }
 
-  //   setUser(u);
+    setUser(u);
 
-  //   fetch(`/api/bookings?dormer_id=${u.dormerId}`)
-  //     .then(r => r.json())
-  //     .then(d => setBookings(Array.isArray(d) ? d : []))
-  //     .catch(() => setBookings([]));
-  //   fetch('/api/rooms')
-  //     .then(r => r.json())
-  //     .then(d => setRooms(Array.isArray(d) ? d.filter(r => r.status === 'available') : []))
-  //     .catch(() => setRooms([]));
-  // }, []);
+    fetch(`/api/bookings?user_id=${u.userId}`)
+      .then(r => r.json())
+      .then(d => setBookings(Array.isArray(d) ? d.map(row => ({ ...row, full_name: row.fname ? `${row.fname}${row.mname ? ' ' + row.mname : ''} ${row.lname}` : undefined, dormer_id: row.user_id })) : []))
+      .catch(() => setBookings([]));
+    fetch('/api/rooms')
+      .then(r => r.json())
+      .then(d => setRooms(Array.isArray(d) ? d.filter(r => r.status === 'available') : []))
+      .catch(() => setRooms([]));
+  }, [router]);
 
   if (!user) return null;
 

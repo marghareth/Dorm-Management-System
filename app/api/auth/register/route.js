@@ -1,10 +1,20 @@
-import { query } from '@/lib/db';
+import { getSupabaseServer } from '@/lib/supabase';
 import { generateToken } from '@/lib/auth';
 import { hashPassword } from '@/lib/password';
 
 export async function POST(request) {
   try {
-    const { firstName, lastName, email, password, phone, program, yearLevel } = await request.json();
+    const {
+      firstName,
+      middleName,
+      lastName,
+      email,
+      password,
+      phone,
+      emergencyContactName,
+      emergencyContactPhone,
+      emergencyContactRelationship,
+    } = await request.json();
 
     if (!firstName || !lastName || !email || !password || !phone) {
       return Response.json({ message: 'All fields are required' }, { status: 400 });
@@ -13,27 +23,43 @@ export async function POST(request) {
       return Response.json({ message: 'Password must be at least 6 characters' }, { status: 400 });
     }
 
-    const existing = await query('SELECT user_id FROM users WHERE email = $1', [email]);
-    if (existing.rows.length > 0) {
+    const supabase = getSupabaseServer();
+
+    const { data: existing } = await supabase
+      .from('users')
+      .select('user_id')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (existing) {
       return Response.json({ message: 'Email already registered' }, { status: 409 });
     }
 
     const hashedPassword = hashPassword(password);
-    const userResult = await query(
-      `INSERT INTO users (full_name, email, phone, password_hash, role)
-       VALUES ($1, $2, $3, $4, 'dormer') RETURNING user_id`,
-      [`${firstName} ${lastName}`, email, phone, hashedPassword]
-    );
-    const userId = userResult.rows[0].user_id;
+    const { data: newUser, error } = await supabase
+      .from('users')
+      .insert({ fname: firstName, mname: middleName || null, lname: lastName, email, phone, password_hash: hashedPassword })
+      .select('user_id')
+      .single();
 
-    await query(
-      `INSERT INTO dormers (user_id, program, year_level) VALUES ($1, $2, $3)`,
-      [userId, program || null, yearLevel || null]
-    );
+    if (error) throw error;
 
-    const token = generateToken(userId, 'dormer');
+    if (emergencyContactName && emergencyContactPhone) {
+      await supabase.from('emergency_contacts').insert({
+        user_id: newUser.user_id,
+        contact_name: emergencyContactName,
+        contact_phone: emergencyContactPhone,
+        relationship: emergencyContactRelationship || null,
+      });
+    }
+
+    const fullName = middleName
+      ? `${firstName} ${middleName} ${lastName}`
+      : `${firstName} ${lastName}`;
+
+    const token = generateToken(newUser.user_id);
     return Response.json(
-      { token, user: { userId, fullName: `${firstName} ${lastName}`, email, role: 'dormer' } },
+      { token, user: { userId: newUser.user_id, fullName, email, role: 'dormer' } },
       { status: 201 }
     );
   } catch (error) {

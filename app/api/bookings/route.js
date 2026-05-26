@@ -1,24 +1,39 @@
-import { query } from '@/lib/db';
+import { getSupabaseServer } from '@/lib/supabase';
 
 export async function GET(request) {
   try {
+    const supabase = getSupabaseServer();
     const { searchParams } = new URL(request.url);
-    const dormerId = searchParams.get('dormer_id');
+    const userId = searchParams.get('user_id');
 
-    let sql = `
-      SELECT b.*, r.room_number, r.type, r.floor, r.price,
-             u.full_name, u.email, d.program, d.year_level
-      FROM bookings b
-      JOIN rooms r ON b.room_id = r.room_id
-      JOIN dormers d ON b.dormer_id = d.dormer_id
-      JOIN users u ON d.user_id = u.user_id
-    `;
-    const params = [];
-    if (dormerId) { sql += ' WHERE b.dormer_id = $1'; params.push(dormerId); }
-    sql += ' ORDER BY b.created_at DESC';
+    let query = supabase
+      .from('bookings')
+      .select(`
+        *,
+        rooms (room_number, type, floor, price),
+        users (fname, mname, lname, email)
+      `)
+      .order('created_at', { ascending: false });
 
-    const result = await query(sql, params);
-    return Response.json(result.rows);
+    if (userId) query = query.eq('user_id', userId);
+
+    const { data, error } = await query;
+    if (error) throw error;
+
+    const result = data.map(b => ({
+      ...b,
+      room_number: b.rooms?.room_number,
+      type: b.rooms?.type,
+      floor: b.rooms?.floor,
+      price: b.rooms?.price,
+      amount_due: b.rooms?.price * b.num_months,
+      full_name: b.users?.mname
+        ? `${b.users.fname} ${b.users.mname} ${b.users.lname}`
+        : `${b.users?.fname} ${b.users?.lname}`,
+      email: b.users?.email,
+    }));
+
+    return Response.json(result);
   } catch (error) {
     console.error(error);
     return Response.json({ message: 'Failed to fetch bookings' }, { status: 500 });
@@ -27,16 +42,29 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const { dormerId, roomId, checkIn, checkOut, numMonths, numOccupants, specialRequests } = await request.json();
-    if (!dormerId || !roomId || !checkIn || !checkOut || !numMonths || !numOccupants) {
+    const supabase = getSupabaseServer();
+    const { userId, roomId, checkIn, checkOut, numMonths, numOccupants, specialRequests } = await request.json();
+
+    if (!userId || !roomId || !checkIn || !checkOut || !numMonths || !numOccupants) {
       return Response.json({ message: 'All fields are required' }, { status: 400 });
     }
-    const result = await query(
-      `INSERT INTO bookings (dormer_id, room_id, check_in, check_out, num_months, num_occupants, special_requests)
-       VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING booking_id`,
-      [dormerId, roomId, checkIn, checkOut, numMonths, numOccupants, specialRequests || null]
-    );
-    return Response.json({ message: 'Booking submitted', bookingId: result.rows[0].booking_id }, { status: 201 });
+
+    const { data, error } = await supabase
+      .from('bookings')
+      .insert({
+        user_id: userId,
+        room_id: roomId,
+        check_in: checkIn,
+        check_out: checkOut,
+        num_months: numMonths,
+        num_occupants: numOccupants,
+        special_requests: specialRequests || null,
+      })
+      .select('booking_id')
+      .single();
+
+    if (error) throw error;
+    return Response.json({ message: 'Booking submitted', bookingId: data.booking_id }, { status: 201 });
   } catch (error) {
     console.error(error);
     return Response.json({ message: 'Failed to submit booking' }, { status: 500 });
