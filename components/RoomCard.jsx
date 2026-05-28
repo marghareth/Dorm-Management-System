@@ -7,7 +7,9 @@ export default function RoomCard({ room, onBook }) {
 
   return (
     <div className={styles.card}>
-      <div className={`${styles.thumb} ${styles['floor' + room.floor]}`} />
+      <div className={`${styles.thumb} ${styles['floor' + room.floor]}`}>
+        <span className={styles.imageLabel}>Image placeholder</span>
+      </div>
       <div className={styles.body}>
         <h3 className={styles.title}>Room {room.room_number} — {room.type}</h3>
         <p className={styles.meta}>Floor {room.floor} · {room.capacity} occupant{room.capacity > 1 ? 's' : ''} max</p>
@@ -25,18 +27,19 @@ export default function RoomCard({ room, onBook }) {
             <span className={styles.price}>₱{Number(room.price).toLocaleString()}</span>
             <span className={styles.per}> / month</span>
           </div>
-          <StatusBadge status={room.status} />
+          <div className={styles.actionRow}>
+            <StatusBadge status={room.status} />
+            {onBook && (
+              <button
+                className={styles.bookBtn}
+                onClick={() => onBook(room)}
+                disabled={!isAvailable}
+              >
+                {isAvailable ? 'Book now' : 'Not available'}
+              </button>
+            )}
+          </div>
         </div>
-
-        {onBook && (
-          <button
-            className={styles.bookBtn}
-            onClick={() => onBook(room)}
-            disabled={!isAvailable}
-          >
-            {isAvailable ? 'Book this room' : 'Not available'}
-          </button>
-        )}
       </div>
     </div>
   );

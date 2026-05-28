@@ -13,7 +13,7 @@ export async function POST(request) {
     const supabase = getSupabaseServer();
     const { data: user, error } = await supabase
       .from('users')
-      .select('user_id, fname, mname, lname, email, password_hash')
+      .select('user_id, fname, mname, lname, email, phone, password_hash')
       .eq('email', email)
       .maybeSingle();
 
@@ -35,7 +35,7 @@ export async function POST(request) {
     const token = generateToken(user.user_id);
     return Response.json({
       token,
-      user: { userId: user.user_id, fullName, email: user.email, role },
+      user: { userId: user.user_id, fullName, email: user.email, phone: user.phone || '', role },
     });
   } catch (error) {
     console.error('Login error:', error);

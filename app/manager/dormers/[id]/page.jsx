@@ -1,38 +1,60 @@
 'use client';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import DashLayout from '@/components/DashLayout';
 import styles from '../mgr-dormers.module.css';
-
-const dormersData = [
-  { dormer_id: 1, full_name: 'Juan dela Cruz', email: 'juan@example.com', phone: '0917-123-4567' },
-  { dormer_id: 2, full_name: 'Ana Santos', email: 'ana@example.com', phone: '0917-234-5678' },
-  { dormer_id: 3, full_name: 'Mark Reyes', email: 'mark@example.com', phone: '0917-345-6789' },
-];
-
-const bookingsData = [
-  { dormer_id: 1, full_name: 'Juan dela Cruz', room_number: '101', status: 'pending', check_in: '2026-06-01', check_out: '2026-12-01' },
-  { dormer_id: 2, full_name: 'Ana Santos', room_number: '204', status: 'approved', check_in: '2026-06-10', check_out: '2027-01-10' },
-  { dormer_id: 3, full_name: 'Mark Reyes', room_number: '305', status: 'rejected', check_in: '2026-05-10', check_out: '2026-08-10' },
-];
 
 export default function DormerDetailPage() {
   const params = useParams();
   const idStr = params?.id || '';
   const id = parseInt(idStr, 10);
 
-  let dormer = dormersData.find((d) => d.dormer_id === id);
-  
-  if (!dormer) {
-    const bookingData = bookingsData.find((b) => b.dormer_id === id);
-    if (bookingData) {
-      dormer = {
-        dormer_id: id,
-        full_name: bookingData.full_name || 'Unknown',
-        email: 'N/A',
-        phone: 'N/A',
-      };
-    }
+  const [dormer, setDormer] = useState(null);
+  const [activeBooking, setActiveBooking] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+
+    Promise.all([
+      fetch(`/api/dormers/${id}`).then((res) => res.json()),
+      fetch(`/api/bookings?user_id=${id}`).then((res) => res.json()),
+    ]).then(([dormerData, bookingsData]) => {
+      if (dormerData && !dormerData.message) {
+        setDormer({
+          ...dormerData,
+          full_name: dormerData.mname
+            ? `${dormerData.fname} ${dormerData.mname} ${dormerData.lname}`
+            : `${dormerData.fname} ${dormerData.lname}`,
+        });
+      } else {
+        setDormer(null);
+      }
+
+      if (Array.isArray(bookingsData)) {
+        const booking = bookingsData.find((b) => b.status === 'approved');
+        setActiveBooking(booking || null);
+      } else {
+        setActiveBooking(null);
+      }
+
+      setLoading(false);
+    }).catch(() => {
+      setDormer(null);
+      setActiveBooking(null);
+      setLoading(false);
+    });
+  }, [id]);
+
+  if (loading) {
+    return (
+      <DashLayout role="manager">
+        <div className={styles.page}>
+          <p>Loading dormer details…</p>
+        </div>
+      </DashLayout>
+    );
   }
 
   if (!dormer) {
@@ -46,8 +68,6 @@ export default function DormerDetailPage() {
     );
   }
 
-  const activeBooking = bookingsData.find((b) => b.dormer_id === id && b.status === 'approved');
-
   return (
     <DashLayout role="manager">
       <div className={styles.page}>
@@ -59,7 +79,7 @@ export default function DormerDetailPage() {
 
         <div className={styles.card}>
           <p><strong>Email:</strong> {dormer.email}</p>
-          <p><strong>Phone:</strong> {dormer.phone}</p>
+          <p><strong>Phone:</strong> {dormer.phone || 'N/A'}</p>
           <p><strong>Program:</strong> N/A</p>
           <p><strong>Year Level:</strong> N/A</p>
           <div style={{ marginTop: '1rem' }}>
@@ -68,8 +88,12 @@ export default function DormerDetailPage() {
               <div>
                 <p><strong>Room:</strong> {activeBooking.room_number}</p>
                 <p><strong>Status:</strong> {activeBooking.status}</p>
-                <p><strong>Check-in:</strong> {new Date(activeBooking.check_in).toLocaleDateString('en-PH')}</p>
-                <p><strong>Check-out:</strong> {new Date(activeBooking.check_out).toLocaleDateString('en-PH')}</p>
+                {activeBooking.check_in && (
+                  <p><strong>Check-in:</strong> {new Date(activeBooking.check_in).toLocaleDateString('en-PH')}</p>
+                )}
+                {activeBooking.check_out && (
+                  <p><strong>Check-out:</strong> {new Date(activeBooking.check_out).toLocaleDateString('en-PH')}</p>
+                )}
               </div>
             ) : (
               <p>No currently approved room.</p>

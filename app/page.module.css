@@ -241,9 +241,21 @@
 }
 
 .roomImagePlaceholder {
-  background-color: var(--card-bg);
+  background: linear-gradient(135deg, #f4f1ec, #e7dfc7);
   height: 260px;
   width: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--dark-brown);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.roomImagePlaceholder::after {
+  content: 'Image placeholder';
+  opacity: 0.75;
 }
 
 .roomInfo {

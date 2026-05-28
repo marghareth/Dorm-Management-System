@@ -5,18 +5,11 @@ import Modal from '@/components/Modal';
 import styles from './mgr-amenities.module.css';
 
 export default function ManagerAmenities() {
-  const [amenities, setAmenities] = useState([
-    { amenity_id: 1, name: 'Wi-Fi' },
-    { amenity_id: 2, name: 'Laundry' },
-    { amenity_id: 3, name: 'Study area' },
-  ]);
-  const [rooms, setRooms]         = useState([
-    { room_id: 101, room_number: '101', type: 'Single', floor: 1, amenities: ['Wi-Fi'] },
-    { room_id: 204, room_number: '204', type: 'Double', floor: 2, amenities: ['Wi-Fi', 'Laundry'] },
-    { room_id: 305, room_number: '305', type: 'Single', floor: 3, amenities: ['Study area'] },
-  ]);
+  const [amenities, setAmenities] = useState([]);
+  const [rooms, setRooms]         = useState([]);
   const [modal, setModal]         = useState(null);
   const [name, setName]           = useState('');
+  const [description, setDescription] = useState('');
   const [editId, setEditId]       = useState(null);
   const [assign, setAssign]       = useState({ roomId: '', amenityId: '' });
   const [msg, setMsg]             = useState('');
@@ -25,22 +18,23 @@ export default function ManagerAmenities() {
     fetch('/api/amenities').then(r => r.json()).then(setAmenities);
     fetch('/api/rooms').then(r => r.json()).then(setRooms);
   };
-  // useEffect(() => { loadAll(); }, []);
+
+  useEffect(() => { loadAll(); }, []);
 
   const flash = (m) => { setMsg(m); setTimeout(() => setMsg(''), 3000); };
 
   const handleAdd = async (e) => {
     e.preventDefault();
-    await fetch('/api/amenities', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ name }) });
-    setModal(null); setName(''); loadAll(); flash('Amenity added!');
+    await fetch('/api/amenities', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ name, description }) });
+    setModal(null); setName(''); setDescription(''); loadAll(); flash('Amenity added!');
   };
 
-  const openEdit = (a) => { setEditId(a.amenity_id); setName(a.name); setModal('edit'); };
+  const openEdit = (a) => { setEditId(a.amenity_id); setName(a.name); setDescription(a.description || ''); setModal('edit'); };
 
   const handleEdit = async (e) => {
     e.preventDefault();
-    await fetch(`/api/amenities/${editId}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ name }) });
-    setModal(null); setName(''); loadAll(); flash('Amenity updated!');
+    await fetch(`/api/amenities/${editId}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ name, description }) });
+    setModal(null); setName(''); setDescription(''); loadAll(); flash('Amenity updated!');
   };
 
   const handleDelete = async (id) => {
@@ -63,7 +57,7 @@ export default function ManagerAmenities() {
             <p className={styles.eyebrow}>Manage</p>
             <h1 className={styles.title}>Amenities</h1>
           </div>
-          <button className={styles.btnAdd} onClick={() => { setName(''); setModal('add'); }}>+ Add amenity</button>
+          <button className={styles.btnAdd} onClick={() => { setName(''); setDescription(''); setModal('add'); }}>+ Add amenity</button>
         </div>
 
         {msg && <div className={styles.success}>{msg}</div>}
@@ -130,6 +124,10 @@ export default function ManagerAmenities() {
               <label className={styles.label}>Amenity name</label>
               <input className={styles.input} value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Study Desk, Refrigerator…" required />
             </div>
+            <div className={styles.group}>
+              <label className={styles.label}>Description</label>
+              <textarea className={styles.input} value={description} onChange={e => setDescription(e.target.value)} placeholder="Optional description" rows={3} />
+            </div>
             <div className={styles.formActions}>
               <button type="submit" className={styles.btnSubmit}>Add amenity</button>
               <button type="button" className={styles.btnCancel} onClick={() => setModal(null)}>Cancel</button>
@@ -144,6 +142,10 @@ export default function ManagerAmenities() {
             <div className={styles.group}>
               <label className={styles.label}>Amenity name</label>
               <input className={styles.input} value={name} onChange={e => setName(e.target.value)} required />
+            </div>
+            <div className={styles.group}>
+              <label className={styles.label}>Description</label>
+              <textarea className={styles.input} value={description} onChange={e => setDescription(e.target.value)} rows={3} />
             </div>
             <div className={styles.formActions}>
               <button type="submit" className={styles.btnSubmit}>Save changes</button>

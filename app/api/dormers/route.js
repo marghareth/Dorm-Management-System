@@ -18,3 +18,4 @@ export async function GET() {
     return Response.json({ message: 'Failed to fetch dormers' }, { status: 500 });
   }
 }
+

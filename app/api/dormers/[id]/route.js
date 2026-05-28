@@ -2,6 +2,7 @@ import { getSupabaseServer } from '@/lib/supabase';
 
 export async function GET(request, { params }) {
   try {
+    const { id } = await params;
     const supabase = getSupabaseServer();
     const { data, error } = await supabase
       .from('users')
@@ -9,7 +10,7 @@ export async function GET(request, { params }) {
         user_id, fname, mname, lname, email, phone,
         emergency_contacts (contact_id, contact_name, contact_phone, relationship)
       `)
-      .eq('user_id', params.id)
+      .eq('user_id', id)
       .maybeSingle();
 
     if (error) throw error;
@@ -23,15 +24,16 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
   try {
+    const { id } = await params;
     const supabase = getSupabaseServer();
     const { phone, emergencyContactName, emergencyContactPhone, emergencyContactRelationship } = await request.json();
 
-    await supabase.from('users').update({ phone: phone || null }).eq('user_id', params.id);
+    await supabase.from('users').update({ phone: phone || null }).eq('user_id', id);
 
     const { data: existing } = await supabase
       .from('emergency_contacts')
       .select('contact_id')
-      .eq('user_id', params.id)
+      .eq('user_id', id)
       .maybeSingle();
 
     if (existing) {
@@ -39,10 +41,10 @@ export async function PUT(request, { params }) {
         contact_name: emergencyContactName || null,
         contact_phone: emergencyContactPhone || null,
         relationship: emergencyContactRelationship || null,
-      }).eq('user_id', params.id);
+      }).eq('user_id', id);
     } else if (emergencyContactName && emergencyContactPhone) {
       await supabase.from('emergency_contacts').insert({
-        user_id: parseInt(params.id),
+        user_id: parseInt(id),
         contact_name: emergencyContactName,
         contact_phone: emergencyContactPhone,
         relationship: emergencyContactRelationship || null,
@@ -58,8 +60,9 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
+    const { id } = await params;
     const supabase = getSupabaseServer();
-    const { error } = await supabase.from('users').delete().eq('user_id', params.id);
+    const { error } = await supabase.from('users').delete().eq('user_id', id);
     if (error) throw error;
     return Response.json({ message: 'Account deleted' });
   } catch (error) {
