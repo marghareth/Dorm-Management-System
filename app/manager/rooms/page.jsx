@@ -8,19 +8,16 @@ import styles from './mgr-rooms.module.css';
 const EMPTY = { roomNumber:'', type:'Single', floor:'1', capacity:'1', price:'', status:'available' };
 
 export default function ManagerRooms() {
-  const [rooms, setRooms]       = useState([
-    { room_id: 101, room_number: '101', type: 'Single', floor: 1, capacity: 1, price: 4500, status: 'available' },
-    { room_id: 204, room_number: '204', type: 'Double', floor: 2, capacity: 2, price: 7000, status: 'occupied' },
-    { room_id: 305, room_number: '305', type: 'Single', floor: 3, capacity: 1, price: 4200, status: 'available' },
-  ]);
+  const [rooms, setRooms]       = useState([]);
   const [modal, setModal]       = useState(null); // 'add' | 'edit'
   const [form, setForm]         = useState(EMPTY);
   const [editId, setEditId]     = useState(null);
   const [msg, setMsg]           = useState('');
   const [error, setError]       = useState('');
 
-  const load = () => fetch('/api/rooms').then(r => r.json()).then(setRooms);
-  // useEffect(() => { load(); }, []);
+  const load = () => fetch('/api/rooms').then(r => r.json()).then(data => setRooms(Array.isArray(data) ? data : []));
+
+  useEffect(() => { load(); }, []);
 
   const handle = (e) => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
 

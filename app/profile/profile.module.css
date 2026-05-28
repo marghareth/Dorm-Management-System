@@ -23,21 +23,38 @@
   margin: 0 auto 1.75rem;
   text-align: center;
 }
-.card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 2rem; }
-.avatar { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--cream); border-radius: 10px; margin-bottom: 1.75rem; }
-.avatarCircle { width: 48px; height: 48px; border-radius: 50%; background: var(--dark-brown); color: var(--cream); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display',serif; font-size: 1.2rem; font-weight: 700; flex-shrink: 0; }
-.name { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--dark-brown); }
-.email { font-size: 0.8rem; color: var(--olive); margin-top: 0.15rem; }
-.form { display: flex; flex-direction: column; gap: 1.1rem; }
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2rem;
+  display: grid;
+  gap: 1.5rem;
+}
+.form { display: flex; flex-direction: column; gap: 1.5rem; }
+.section { background: #f8f4eb; border: 1px solid #e7dfd2; border-radius: 14px; padding: 1.5rem; }
+.sectionHeader { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
+.sectionTitle { font-size: 0.96rem; font-weight: 700; color: var(--dark-brown); margin: 0; }
+.sectionSubtitle { font-size: 0.84rem; color: var(--olive); margin: 0; }
 .group { display: flex; flex-direction: column; gap: 0.4rem; }
+.detailRow { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid #e7dfd2; }
+.detailRow:last-child { border-bottom: none; }
+.detailLabel { font-size: 0.78rem; color: var(--olive); text-transform: uppercase; letter-spacing: 0.08em; }
+.detailValue { font-size: 0.95rem; color: var(--dark-brown); font-weight: 600; text-align: right; }
 .label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--olive); }
-.input { padding: 0.65rem 0.9rem; border: 1.5px solid #e0d9cc; border-radius: 8px; font-size: 0.9rem; font-family: 'DM Sans',sans-serif; color: var(--dark-brown); background: #fff; outline: none; transition: border-color 0.2s; width: 100%; }
+.input { padding: 0.75rem 1rem; border: 1.5px solid #e0d9cc; border-radius: 10px; font-size: 0.95rem; font-family: 'DM Sans',sans-serif; color: var(--dark-brown); background: #fff; outline: none; transition: border-color 0.2s; width: 100%; }
 .input:focus { border-color: var(--gold-light); }
-.actions { display: flex; gap: 0.75rem; padding-top: 0.5rem; }
-.btnSave { flex: 1; padding: 0.75rem; background: var(--dark-brown); color: var(--cream); border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background 0.2s; font-family: 'DM Sans',sans-serif; }
+.actions { display: flex; justify-content: flex-end; gap: 0.75rem; padding-top: 0.5rem; }
+.btnSave { padding: 0.85rem 1.25rem; background: var(--dark-brown); color: var(--cream); border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; font-family: 'DM Sans',sans-serif; }
 .btnSave:hover:not(:disabled) { background: var(--olive); }
 .btnSave:disabled { opacity: 0.6; cursor: not-allowed; }
-.btnDelete { padding: 0.75rem 1.25rem; background: #f8d7da; color: #842029; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 500; cursor: pointer; font-family: 'DM Sans',sans-serif; transition: background 0.2s; }
+.btnDelete { padding: 0.85rem 1.25rem; background: #f8d7da; color: #842029; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans',sans-serif; transition: background 0.2s; }
 .btnDelete:hover { background: #f1bec2; }
-.success { background: #d4edda; color: #2d6a4f; padding: 0.7rem 1rem; border-radius: 8px; font-size: 0.875rem; margin-bottom: 1rem; }
-.error { background: #f8d7da; color: #842029; padding: 0.7rem 1rem; border-radius: 8px; font-size: 0.875rem; margin-bottom: 1rem; }
+.success { background: #d4edda; color: #2d6a4f; padding: 0.85rem 1rem; border-radius: 10px; font-size: 0.9rem; margin: 0; }
+.error { background: #f8d7da; color: #842029; padding: 0.85rem 1rem; border-radius: 10px; font-size: 0.9rem; margin: 0; }
+@media (max-width: 640px) {
+  .detailRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

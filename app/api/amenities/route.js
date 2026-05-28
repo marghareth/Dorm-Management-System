@@ -1,24 +1,42 @@
-import { query } from '@/lib/db';
+import { getSupabaseServer } from '@/lib/supabase';
 
 export async function GET() {
   try {
-    const result = await query('SELECT * FROM amenities ORDER BY name');
-    return Response.json(result.rows);
+    const supabase = getSupabaseServer();
+    const { data, error } = await supabase
+      .from('amenities')
+      .select('*')
+      .order('name');
+
+    if (error) throw error;
+    return Response.json(data);
   } catch (error) {
+    console.error(error);
     return Response.json({ message: 'Failed to fetch amenities' }, { status: 500 });
   }
 }
 
 export async function POST(request) {
   try {
-    const { name } = await request.json();
+    const supabase = getSupabaseServer();
+    const { name, description } = await request.json();
+
     if (!name) return Response.json({ message: 'Name is required' }, { status: 400 });
-    const result = await query(
-      'INSERT INTO amenities (name) VALUES ($1) RETURNING *', [name]
-    );
-    return Response.json(result.rows[0], { status: 201 });
+
+    const { data, error } = await supabase
+      .from('amenities')
+      .insert({ name, description: description || null })
+      .select()
+      .single();
+
+    if (error) {
+      if (error.code === '23505') return Response.json({ message: 'Amenity already exists' }, { status: 409 });
+      throw error;
+    }
+
+    return Response.json(data, { status: 201 });
   } catch (error) {
-    if (error.code === '23505') return Response.json({ message: 'Amenity already exists' }, { status: 409 });
+    console.error(error);
     return Response.json({ message: 'Failed to add amenity' }, { status: 500 });
   }
 }

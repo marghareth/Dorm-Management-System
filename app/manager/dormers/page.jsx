@@ -1,20 +1,33 @@
 'use client';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import DashLayout from '@/components/DashLayout';
 import styles from './mgr-dormers.module.css';
 
-const dormers = [
-  { dormer_id: 1, full_name: 'Juan dela Cruz', email: 'juan@example.com', phone: '0917-123-4567' },
-  { dormer_id: 2, full_name: 'Ana Santos', email: 'ana@example.com', phone: '0917-234-5678' },
-  { dormer_id: 3, full_name: 'Mark Reyes', email: 'mark@example.com', phone: '0917-345-6789' },
-];
-
-const activeBookings = [
-  { dormer_id: 2, room_number: '204', status: 'approved' },
-  { dormer_id: 3, room_number: '305', status: 'rejected' },
-];
-
 export default function ManagerDormers() {
+  const [dormers, setDormers] = useState([]);
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/dormers')
+      .then(r => r.json())
+      .then(data => {
+        if (!Array.isArray(data)) return setDormers([]);
+        setDormers(data.map(d => ({
+          ...d,
+          full_name: d.mname ? `${d.fname} ${d.mname} ${d.lname}` : `${d.fname} ${d.lname}`,
+        })));
+      })
+      .catch(() => setDormers([]));
+
+    fetch('/api/bookings')
+      .then(r => r.json())
+      .then(data => setBookings(Array.isArray(data) ? data : []))
+      .catch(() => setBookings([]));
+  }, []);
+
+  const activeBookings = bookings.filter((b) => b.status === 'approved');
+
   return (
     <DashLayout role="manager">
       <div className={styles.page}>
@@ -34,11 +47,11 @@ export default function ManagerDormers() {
             </thead>
             <tbody>
               {dormers.map((d) => {
-                const booking = activeBookings.find((b) => b.dormer_id === d.dormer_id && b.status === 'approved');
+                const booking = activeBookings.find((b) => b.user_id === d.user_id && b.status === 'approved');
                 return (
-                  <tr key={d.dormer_id}>
+                  <tr key={d.user_id}>
                     <td>
-                      <Link href={`/manager/dormers/${d.dormer_id}`} className={styles.link}>
+                      <Link href={`/manager/dormers/${d.user_id}`} className={styles.link}>
                         {d.full_name}
                       </Link>
                     </td>

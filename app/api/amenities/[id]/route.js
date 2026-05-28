@@ -1,29 +1,40 @@
-import { query } from '@/lib/db';
-
-export async function PUT(request, { params }) {
-  try {
-    const amenityId = params.id;
-    const { name } = await request.json();
-
-    if (!name) {
-      return Response.json({ message: 'Name is required' }, { status: 400 });
-    }
-
-    await query('UPDATE amenities SET name = $1 WHERE amenity_id = $2', [name, amenityId]);
-    return Response.json({ message: 'Amenity updated successfully' });
-  } catch (error) {
-    console.error(error);
-    return Response.json({ message: 'Failed to update amenity' }, { status: 500 });
-  }
-}
+import { getSupabaseServer } from '@/lib/supabase';
 
 export async function DELETE(request, { params }) {
   try {
-    const amenityId = params.id;
-    await query('DELETE FROM amenities WHERE amenity_id = $1', [amenityId]);
+    const { id } = await params;
+    const supabase = getSupabaseServer();
+
+    const { error } = await supabase
+      .from('amenities')
+      .delete()
+      .eq('amenity_id', id);
+
+    if (error) throw error;
     return Response.json({ message: 'Amenity deleted successfully' });
   } catch (error) {
     console.error(error);
     return Response.json({ message: 'Failed to delete amenity' }, { status: 500 });
+  }
+}
+
+export async function PUT(request, { params }) {
+  try {
+    const { id } = await params;
+    const supabase = getSupabaseServer();
+    const { name, description } = await request.json();
+
+    if (!name) return Response.json({ message: 'Name is required' }, { status: 400 });
+
+    const { error } = await supabase
+      .from('amenities')
+      .update({ name, description: description || null })
+      .eq('amenity_id', id);
+
+    if (error) throw error;
+    return Response.json({ message: 'Amenity updated successfully' });
+  } catch (error) {
+    console.error(error);
+    return Response.json({ message: 'Failed to update amenity' }, { status: 500 });
   }
 }

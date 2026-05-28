@@ -59,7 +59,7 @@ export async function POST(request) {
 
     const token = generateToken(newUser.user_id);
     return Response.json(
-      { token, user: { userId: newUser.user_id, fullName, email, role: 'dormer' } },
+      { token, user: { userId: newUser.user_id, fullName, email, phone, role: 'dormer' } },
       { status: 201 }
     );
   } catch (error) {
