@@ -1,37 +1,32 @@
-import { getSupabaseServer } from '@/lib/supabase';
+// app/api/room-amenity/route.js
 
+import { createClient } from '@/lib/supabase/server';
+import { NextResponse } from 'next/server';
+
+// POST — assign an amenity to a room
 export async function POST(request) {
-  try {
-    const supabase = getSupabaseServer();
-    const { roomId, amenityId, quantity } = await request.json();
+  const supabase = createClient();
+  const { roomId, amenityId } = await request.json();
 
-    const { error } = await supabase
-      .from('room_amenities')
-      .upsert({ room_id: roomId, amenity_id: amenityId, quantity: quantity || 1 });
+  const { error } = await supabase
+    .from('room_amenity')
+    .insert({ room_id: roomId, amenity_id: amenityId });
 
-    if (error) throw error;
-    return Response.json({ message: 'Amenity assigned to room' }, { status: 201 });
-  } catch (error) {
-    console.error(error);
-    return Response.json({ message: 'Failed to assign amenity' }, { status: 500 });
-  }
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ success: true });
 }
 
+// DELETE — unassign (remove) an amenity from a room
 export async function DELETE(request) {
-  try {
-    const supabase = getSupabaseServer();
-    const { roomId, amenityId } = await request.json();
+  const supabase = createClient();
+  const { roomId, amenityId } = await request.json();
 
-    const { error } = await supabase
-      .from('room_amenities')
-      .delete()
-      .eq('room_id', roomId)
-      .eq('amenity_id', amenityId);
+  const { error } = await supabase
+    .from('room_amenity')
+    .delete()
+    .eq('room_id', roomId)
+    .eq('amenity_id', amenityId);
 
-    if (error) throw error;
-    return Response.json({ message: 'Amenity removed from room' });
-  } catch (error) {
-    console.error(error);
-    return Response.json({ message: 'Failed to remove amenity' }, { status: 500 });
-  }
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ success: true });
 }
