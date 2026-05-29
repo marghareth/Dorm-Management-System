@@ -1,32 +1,37 @@
-// app/api/room-amenity/route.js
+import { getSupabaseServer } from '@/lib/supabase';
 
-import { createClient } from '@/lib/supabase/server';
-import { NextResponse } from 'next/server';
-
-// POST — assign an amenity to a room
 export async function POST(request) {
-  const supabase = createClient();
-  const { roomId, amenityId } = await request.json();
+  try {
+    const supabase = getSupabaseServer();
+    const { roomId, amenityId, quantity } = await request.json();
 
-  const { error } = await supabase
-    .from('room_amenity')
-    .insert({ room_id: roomId, amenity_id: amenityId });
+    const { error } = await supabase
+      .from('room_amenities')
+      .upsert({ room_id: roomId, amenity_id: amenityId, quantity: quantity || 1 });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ success: true });
+    if (error) throw error;
+    return Response.json({ message: 'Amenity assigned to room' }, { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return Response.json({ message: 'Failed to assign amenity' }, { status: 500 });
+  }
 }
 
-// DELETE — unassign (remove) an amenity from a room
 export async function DELETE(request) {
-  const supabase = createClient();
-  const { roomId, amenityId } = await request.json();
+  try {
+    const supabase = getSupabaseServer();
+    const { roomId, amenityId } = await request.json();
 
-  const { error } = await supabase
-    .from('room_amenity')
-    .delete()
-    .eq('room_id', roomId)
-    .eq('amenity_id', amenityId);
+    const { error } = await supabase
+      .from('room_amenities')
+      .delete()
+      .eq('room_id', roomId)
+      .eq('amenity_id', amenityId);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ success: true });
+    if (error) throw error;
+    return Response.json({ message: 'Amenity removed from room' });
+  } catch (error) {
+    console.error(error);
+    return Response.json({ message: 'Failed to remove amenity' }, { status: 500 });
+  }
 }
