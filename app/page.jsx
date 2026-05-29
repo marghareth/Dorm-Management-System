@@ -28,14 +28,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── FEATURES ── */}
-        <section id="features" className={styles.features}>
+        {/* ── SERVICES ── */}
+        <section id="services" className={styles.services}>
           <div className={styles.sectionInner}>
             <p className={styles.eyebrowLight}>WHY CHOOSE US</p>
-            <h2 className={styles.featureHeading}>
+            <h2 className={styles.serviceHeading}>
               Everything you need<br />is here
             </h2>
-            <p className={styles.featureSub}>
+            <p className={styles.serviceSub}>
               We keep things simple — clean rooms, fair pricing, and a manager who actually responds.
             </p>
             <div className={styles.cards}>
@@ -190,7 +190,7 @@ export default function Home() {
           <div className={styles.footerLinks}>
             <div className={styles.footerCol}>
               <p className={styles.footerColTitle}>Navigate</p>
-              <a href="#features" className={styles.footerLink}>Features</a>
+              <a href="#services" className={styles.footerLink}>Services</a>
               <a href="#rooms" className={styles.footerLink}>Rooms</a>
               <a href="/register" className={styles.footerLink}>Register</a>
             </div>

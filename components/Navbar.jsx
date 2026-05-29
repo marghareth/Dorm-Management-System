@@ -11,7 +11,7 @@ export default function Navbar() {
           xanelle<span className={styles.logoAccent}>dorms</span>
         </Link>
         <div className={styles.links}>
-          <a href="#features" className={styles.navLink}>Features</a>
+          <a href="#services" className={styles.navLink}>Services</a>
           <a href="#rooms" className={styles.navLink}>Rooms</a>
         </div>
         <Link href="/login" className={styles.signIn}>Sign in</Link>

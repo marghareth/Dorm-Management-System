@@ -9,6 +9,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: '',
+    middleName: '',
     lastName: '',
     email: '',
     password: '',
@@ -30,13 +31,11 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
 
-    // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
-    // Validate password length
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters');
       return;
@@ -52,6 +51,7 @@ export default function RegisterPage() {
         },
         body: JSON.stringify({
           firstName: formData.firstName,
+          middleName: formData.middleName,
           lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
@@ -67,11 +67,9 @@ export default function RegisterPage() {
         return;
       }
 
-      // Store token and user info in localStorage (include phone for next step)
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify({ ...data.user, phone: formData.phone }));
 
-      // Redirect to emergency contact flow
       router.push('/emergency-contact');
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -81,6 +79,13 @@ export default function RegisterPage() {
 
   return (
     <div className={styles.container}>
+      <button
+        type="button"
+        onClick={() => router.back()}
+        className={styles.backBtn}
+      >
+        ← Back
+      </button>
       <div className={styles.registerBox}>
         <h1 className={styles.heading}>Create Account</h1>
         <p className={styles.subtext}>Join Xanelle Dorms today</p>
@@ -99,6 +104,17 @@ export default function RegisterPage() {
                 value={formData.firstName}
                 onChange={handleChange}
                 required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Middle Name</label>
+              <input
+                type="text"
+                name="middleName"
+                className={styles.input}
+                placeholder="Cruz"
+                value={formData.middleName}
+                onChange={handleChange}
               />
             </div>
             <div className={styles.formGroup}>

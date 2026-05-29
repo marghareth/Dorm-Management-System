@@ -5,6 +5,7 @@
   min-height: 100vh;
   background-color: var(--cream);
   padding: 2rem;
+  position: relative;
 }
 
 .registerBox {
@@ -125,6 +126,26 @@
   color: var(--gold-light);
 }
 
+.backBtn {
+  background-color: transparent;
+  color: var(--dark-brown);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: absolute;
+  left: 2rem;
+  top: 2rem;
+}
+
+.backBtn:hover {
+  background-color: var(--cream);
+  border-color: var(--dark-brown);
+}
+
 @media (max-width: 480px) {
   .formRow {
     grid-template-columns: 1fr;
@@ -132,5 +153,12 @@
 
   .registerBox {
     padding: 2rem;
+  }
+
+  .backBtn {
+    left: 1rem;
+    top: 1rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
   }
 }
