@@ -109,13 +109,13 @@
   color: var(--cream);
 }
 
-/* ── Features ── */
-.features {
+/* ── Services ── */
+.services {
   background-color: var(--dark-brown);
   padding: 6rem 2rem;
 }
 
-.featureHeading {
+.serviceHeading {
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   color: var(--cream);
@@ -124,7 +124,7 @@
   letter-spacing: -0.02em;
 }
 
-.featureSub {
+.serviceSub {
   font-size: 0.95rem;
   color: rgba(245, 240, 232, 0.65);
   line-height: 1.65;
