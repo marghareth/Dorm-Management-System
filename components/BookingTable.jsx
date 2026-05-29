@@ -19,6 +19,7 @@ export default function BookingTable({ bookings, isManager, onApprove, onReject,
             <th>Check-out</th>
             <th>Months</th>
             <th>Occupants</th>
+            <th>Amount Due</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
@@ -31,6 +32,7 @@ export default function BookingTable({ bookings, isManager, onApprove, onReject,
             const checkOut = b.check_out || b.checkOut ? new Date(b.check_out || b.checkOut).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
             const months = b.num_months ?? b.numMonths ?? '—';
             const occupants = b.num_occupants ?? b.numOccupants ?? '—';
+            const amountDue = b.amount_due ? `₱${Number(b.amount_due).toLocaleString()}` : '—';
 
             return (
               <tr key={b.booking_id}>
@@ -56,25 +58,27 @@ export default function BookingTable({ bookings, isManager, onApprove, onReject,
                 <td>{checkOut}</td>
                 <td>{months}</td>
                 <td>{occupants}</td>
+                <td>{amountDue}</td>
                 <td><StatusBadge status={b.status} /></td>
                 <td>
-                <div className={styles.actions}>
-                  {isManager && b.status === 'pending' && (
-                    <>
-                      <button className={styles.btnApprove} onClick={() => onApprove(b.booking_id)}>Approve</button>
-                      <button className={styles.btnReject}  onClick={() => onReject(b.booking_id)}>Reject</button>
-                    </>
-                  )}
-                  {!isManager && b.status === 'pending' && (
-                    <button className={styles.btnCancel} onClick={() => onCancel(b.booking_id)}>Cancel</button>
-                  )}
-                  {b.status !== 'pending' && <span className={styles.na}>—</span>}
-                </div>
-              </td>
-            </tr>
-          )})}
+                  <div className={styles.actions}>
+                    {isManager && b.status === 'pending' && (
+                      <>
+                        <button className={styles.btnApprove} onClick={() => onApprove(b.booking_id)}>Approve</button>
+                        <button className={styles.btnReject} onClick={() => onReject(b.booking_id)}>Reject</button>
+                      </>
+                    )}
+                    {!isManager && b.status === 'pending' && (
+                      <button className={styles.btnCancel} onClick={() => onCancel(b.booking_id)}>Cancel</button>
+                    )}
+                    {b.status !== 'pending' && <span className={styles.na}>—</span>}
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
   );
-} 
+}
