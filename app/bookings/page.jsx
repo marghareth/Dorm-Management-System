@@ -9,7 +9,7 @@ export default function BookingsPage() {
   const router = useRouter();
   const [user, setUser]         = useState(null);
   const [bookings, setBookings] = useState([]);
-  const [loading, setLoading]   = useState(false);
+  const [loading, setLoading]   = useState(true);
   const [msg, setMsg]           = useState('');
 
   useEffect(() => {
@@ -18,6 +18,7 @@ export default function BookingsPage() {
     if (!token || !stored) { router.push('/login'); return; }
     const u = JSON.parse(stored);
     setUser(u);
+    setLoading(true);
     fetch(`/api/bookings?user_id=${u.userId}`)
       .then(r => r.json()).then(d => { setBookings(Array.isArray(d) ? d.map(row => ({ ...row, full_name: row.fname ? `${row.fname}${row.mname ? ' ' + row.mname : ''} ${row.lname}` : undefined, dormer_id: row.user_id })) : []); setLoading(false); })
       .catch(() => { setBookings([]); setLoading(false); });
@@ -35,7 +36,9 @@ export default function BookingsPage() {
     setTimeout(() => setMsg(''), 3000);
   };
 
-  if (!user) return null;
+  if (!user) {
+    return loading ? <div style={{ padding: '2rem', textAlign: 'center' }}>Loading bookings…</div> : null;
+  }
 
   return (
     <DashLayout role="dormer">

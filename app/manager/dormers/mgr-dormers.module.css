@@ -7,10 +7,21 @@
 .eyebrow { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 0.4rem; }
 .title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--dark-brown); letter-spacing: -0.02em; }
 .header { margin-bottom: 1.75rem; }
-.card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }
 .table { width: 100%; border-collapse: collapse; }
 .table th, .table td { padding: 1rem; border-bottom: 1px solid var(--border); text-align: left; }
 .table th { background: #f5f0e8; color: var(--olive); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .table tr:hover td { background: rgba(245,240,232,0.5); }
 .link { color: var(--dark-brown); text-decoration: none; font-weight: 600; }
 .link:hover { text-decoration: underline; }
+
+.detailsGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
+.sectionTitle { font-size: 1.1rem; font-weight: 700; color: var(--dark-brown); margin-bottom: 1.25rem; letter-spacing: -0.01em; }
+.detailsSection { display: flex; flex-direction: column; gap: 0.75rem; }
+.detailRow { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(200,190,170,0.3); }
+.detailRow:last-child { border-bottom: none; }
+.detailLabel { font-size: 0.85rem; color: var(--olive); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.detailValue { font-size: 0.95rem; color: var(--dark-brown); font-weight: 500; }
+.bookingInfo { display: flex; flex-direction: column; gap: 0.75rem; }
+.empty { color: var(--olive); font-size: 0.9rem; font-style: italic; }
+

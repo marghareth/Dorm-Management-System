@@ -53,7 +53,7 @@ export default function LoginPage() {
     <div className={styles.container}>
       <div className={styles.loginBox}>
         <h1 className={styles.heading}>Sign in</h1>
-        <p className={styles.subtext}>Welcome back to Xanelle Dorms</p>
+        <p className={styles.subtext}>Welcome back to <Link href="/" className={styles.brandLink}>Xanelle Dorms</Link></p>
 
         {error && <div className={styles.error}>{error}</div>}
 
