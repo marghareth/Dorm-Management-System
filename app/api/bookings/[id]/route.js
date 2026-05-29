@@ -2,6 +2,7 @@ import { getSupabaseServer } from '@/lib/supabase';
 
 export async function PUT(request, { params }) {
   try {
+    const { id } = await params;
     const supabase = getSupabaseServer();
     const { status } = await request.json();
 
@@ -10,7 +11,7 @@ export async function PUT(request, { params }) {
     const { error } = await supabase
       .from('bookings')
       .update({ status })
-      .eq('booking_id', params.id);
+      .eq('booking_id', id);
 
     if (error) throw error;
     return Response.json({ message: 'Booking status updated' });
@@ -22,8 +23,14 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
+    const { id } = await params;
     const supabase = getSupabaseServer();
-    const { error } = await supabase.from('bookings').delete().eq('booking_id', params.id);
+
+    const { error } = await supabase
+      .from('bookings')
+      .delete()
+      .eq('booking_id', id);
+
     if (error) throw error;
     return Response.json({ message: 'Booking deleted' });
   } catch (error) {

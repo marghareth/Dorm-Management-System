@@ -10,7 +10,7 @@ export default function ProfilePage() {
   const [form, setForm]   = useState({ phone: '', emergencyContactName: '', emergencyContactPhone: '', emergencyContactRelationship: '' });
   const [msg, setMsg]     = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token  = localStorage.getItem('token');
@@ -28,7 +28,9 @@ export default function ProfilePage() {
           emergencyContactPhone: contact.contact_phone || '',
           emergencyContactRelationship: contact.relationship || '',
         });
-      });
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, [router]);
 
   const handle = (e) => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
@@ -81,7 +83,17 @@ export default function ProfilePage() {
     router.push('/');
   };
 
-  if (!user) return null;
+  if (!user || loading) {
+    return (
+      <DashLayout role="dormer">
+        <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--olive)' }}>
+          Loading profile…
+        </div>
+      </DashLayout>
+    );
+  }
+
+  const initials = user.fullName?.charAt(0).toUpperCase() || '?';
 
   return (
     <DashLayout role="dormer">
@@ -91,78 +103,68 @@ export default function ProfilePage() {
           <h1 className={styles.title}>My profile</h1>
         </div>
 
-        <div className={styles.card}>
-          {msg   && <div className={styles.success}>{msg}</div>}
-          {error && <div className={styles.error}>{error}</div>}
+        {msg   && <div className={styles.success}>{msg}</div>}
+        {error && <div className={styles.error}>{error}</div>}
 
-          <form onSubmit={handleSave} className={styles.form}>
-            <div className={styles.section}>
-              <div className={styles.sectionHeader}>
-                <p className={styles.sectionTitle}>Dormer information</p>
-                <p className={styles.sectionSubtitle}>Your account details and contact number.</p>
-              </div>
-              <div className={styles.detailRow}>
-                <span className={styles.detailLabel}>Full name</span>
-                <span className={styles.detailValue}>{user.fullName}</span>
-              </div>
-              <div className={styles.detailRow}>
-                <span className={styles.detailLabel}>Email</span>
-                <span className={styles.detailValue}>{user.email}</span>
-              </div>
+        {/* Profile banner */}
+        <div className={styles.profileCard}>
+          <div className={styles.avatarCircle}>{initials}</div>
+          <div>
+            <p className={styles.profileName}>{user.fullName}</p>
+            <p className={styles.profileEmail}>{user.email}</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSave} className={styles.formContainer}>
+          {/* Contact info */}
+          <div className={styles.card}>
+            <h2 className={styles.sectionTitle}>Contact Information</h2>
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Full name</span>
+              <span className={styles.infoValue}>{user.fullName}</span>
+            </div>
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Email</span>
+              <span className={styles.infoValue}>{user.email}</span>
+            </div>
+            <div className={styles.formSection}>
               <div className={styles.group}>
                 <label className={styles.label}>Phone number</label>
                 <input className={styles.input} name="phone" value={form.phone} onChange={handle} placeholder="09XX-XXX-XXXX" />
               </div>
             </div>
+          </div>
 
-            <div className={styles.section}>
-              <div className={styles.sectionHeader}>
-                <p className={styles.sectionTitle}>Emergency contact</p>
-                <p className={styles.sectionSubtitle}>Keep a trusted contact on file for safety.</p>
-              </div>
-
+          {/* Emergency contact */}
+          <div className={styles.card}>
+            <h2 className={styles.sectionTitle}>Emergency Contact</h2>
+            <p className={styles.sectionSubtitle}>Keep a trusted contact on file for safety.</p>
+            <div className={styles.formSection}>
               <div className={styles.group}>
                 <label className={styles.label}>Contact name</label>
-                <input
-                  className={styles.input}
-                  name="emergencyContactName"
-                  value={form.emergencyContactName}
-                  onChange={handle}
-                  placeholder="Juan Dela Cruz"
-                />
+                <input className={styles.input} name="emergencyContactName" value={form.emergencyContactName} onChange={handle} placeholder="Juan Dela Cruz" />
               </div>
               <div className={styles.group}>
                 <label className={styles.label}>Contact phone</label>
-                <input
-                  className={styles.input}
-                  name="emergencyContactPhone"
-                  value={form.emergencyContactPhone}
-                  onChange={handle}
-                  placeholder="09XX-XXX-XXXX"
-                />
+                <input className={styles.input} name="emergencyContactPhone" value={form.emergencyContactPhone} onChange={handle} placeholder="09XX-XXX-XXXX" />
               </div>
               <div className={styles.group}>
                 <label className={styles.label}>Relationship</label>
-                <input
-                  className={styles.input}
-                  name="emergencyContactRelationship"
-                  value={form.emergencyContactRelationship}
-                  onChange={handle}
-                  placeholder="e.g. Parent"
-                />
+                <input className={styles.input} name="emergencyContactRelationship" value={form.emergencyContactRelationship} onChange={handle} placeholder="e.g. Parent" />
               </div>
             </div>
+          </div>
 
-            <div className={styles.actions}>
-              <button type="submit" className={styles.btnSave} disabled={loading}>
-                {loading ? 'Saving…' : 'Save changes'}
-              </button>
-              <button type="button" className={styles.btnDelete} onClick={handleDelete}>
-                Delete account
-              </button>
-            </div>
-          </form>
-        </div>
+          {/* Actions */}
+          <div className={styles.actions}>
+            <button type="submit" className={styles.btnSave} disabled={loading}>
+              {loading ? 'Saving…' : 'Save changes'}
+            </button>
+            <button type="button" className={styles.btnDelete} onClick={handleDelete}>
+              Delete account
+            </button>
+          </div>
+        </form>
       </div>
     </DashLayout>
   );

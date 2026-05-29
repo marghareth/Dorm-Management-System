@@ -1,9 +1,67 @@
 "use client"
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import styles from './page.module.css';
 
 export default function Home() {
+  const router = useRouter();
+  const [rooms, setRooms] = useState([]);
+  const [loadingRooms, setLoadingRooms] = useState(true);
+  const [registerError, setRegisterError] = useState('');
+  const [registerLoading, setRegisterLoading] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/rooms')
+      .then(r => r.json())
+      .then(data => setRooms(Array.isArray(data) ? data : []))
+      .catch(() => setRooms([]))
+      .finally(() => setLoadingRooms(false));
+  }, []);
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setRegisterError('');
+    const form = e.target;
+    const password = form.password.value;
+    const confirmPassword = form.confirmPassword.value;
+
+    if (password !== confirmPassword) {
+      setRegisterError('Passwords do not match');
+      return;
+    }
+    if (password.length < 6) {
+      setRegisterError('Password must be at least 6 characters');
+      return;
+    }
+
+    setRegisterLoading(true);
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: form.firstName.value,
+          middleName: form.middleName.value,
+          lastName: form.lastName.value,
+          email: form.email.value,
+          password,
+          phone: form.phone.value,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setRegisterError(data.message || 'Registration failed'); return; }
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify({ ...data.user, phone: form.phone.value }));
+      router.push('/emergency-contact');
+    } catch {
+      setRegisterError('An error occurred. Please try again.');
+    } finally {
+      setRegisterLoading(false);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -71,50 +129,46 @@ export default function Home() {
               </div>
               <a href="/register" className={styles.btnOutline}>Register to book</a>
             </div>
-            <div className={styles.roomGrid}>
-              <div className={styles.roomCard}>
-                <div className={styles.roomImagePlaceholder} />
-                <div className={styles.roomInfo}>
-                  <h3 className={styles.roomTitle}>Room 101 — Single</h3>
-                  <p className={styles.roomDetails}>Floor 1 · 1 occupant max</p>
-                  <div className={styles.priceSection}>
-                    <p className={styles.roomPrice}>₱4,500</p>
-                    <p className={styles.roomDuration}>/ month</p>
+
+            {loadingRooms ? (
+              <p style={{ color: 'var(--olive)', textAlign: 'center', padding: '2rem' }}>Loading rooms…</p>
+            ) : rooms.length === 0 ? (
+              <p style={{ color: 'var(--olive)', textAlign: 'center', padding: '2rem' }}>No rooms available at the moment.</p>
+            ) : (
+              <div className={styles.roomGrid}>
+                {rooms.map(room => (
+                  <div key={room.room_id} className={styles.roomCard}>
+                    <div className={`${styles.roomImagePlaceholder} ${styles['floor' + room.floor] || ''}`} />
+                    <div className={styles.roomInfo}>
+                      <h3 className={styles.roomTitle}>Room {room.room_number} — {room.type}</h3>
+                      <p className={styles.roomDetails}>Floor {room.floor} · {room.capacity} occupant{room.capacity > 1 ? 's' : ''} max</p>
+
+                      {room.amenities && room.amenities.length > 0 && (
+                        <div className={styles.amenityList}>
+                          {room.amenities.map(a => (
+                            <span key={a} className={styles.amenityPill}>{a}</span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className={styles.priceSection}>
+                        <p className={styles.roomPrice}>₱{Number(room.price).toLocaleString()}</p>
+                        <p className={styles.roomDuration}>/ month</p>
+                      </div>
+
+                      <div className={styles.roomCardFooter}>
+                        <span className={room.status === 'available' ? styles.roomBadge : styles.roomBadgeOccupied}>
+                          {room.status.charAt(0).toUpperCase() + room.status.slice(1)}
+                        </span>
+                        {room.status === 'available' && (
+                          <a href="/register" className={styles.bookBtn}>Book now</a>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className={styles.roomCardFooter}>
-                    <span className={styles.roomBadge}>Available</span>
-                    <a href="/bookings" className={styles.bookBtn}>Book now</a>
-                  </div>
-                </div>
+                ))}
               </div>
-              <div className={styles.roomCard}>
-                <div className={styles.roomImagePlaceholder} />
-                <div className={styles.roomInfo}>
-                  <h3 className={styles.roomTitle}>Room 102 — Single</h3>
-                  <p className={styles.roomDetails}>Floor 1 · 1 occupant max</p>
-                  <div className={styles.priceSection}>
-                    <p className={styles.roomPrice}>₱4,500</p>
-                    <p className={styles.roomDuration}>/ month</p>
-                  </div>
-                  <span className={styles.roomBadgeOccupied}>Occupied</span>
-                </div>
-              </div>
-              <div className={styles.roomCard}>
-                <div className={styles.roomImagePlaceholder} />
-                <div className={styles.roomInfo}>
-                  <h3 className={styles.roomTitle}>Room 103 — Single</h3>
-                  <p className={styles.roomDetails}>Floor 1 · 1 occupant max</p>
-                  <div className={styles.priceSection}>
-                    <p className={styles.roomPrice}>₱4,200</p>
-                    <p className={styles.roomDuration}>/ month</p>
-                  </div>
-                  <div className={styles.roomCardFooter}>
-                    <span className={styles.roomBadge}>Available</span>
-                    <a href="/bookings" className={styles.bookBtn}>Book now</a>
-                  </div>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </section>
 
@@ -127,52 +181,44 @@ export default function Home() {
               Create your account below. You'll be able to browse rooms, submit bookings,
               and manage your profile directly.
             </p>
-            <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
-              <div className={styles.formRow}>
+            <form className={styles.form} onSubmit={handleRegister}>
+              <div className={styles.formRow} style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>FIRST NAME</label>
-                  <input className={styles.input} type="text" placeholder="Maria" />
+                  <input className={styles.input} type="text" name="firstName" placeholder="Maria" required />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>MIDDLE NAME</label>
+                  <input className={styles.input} type="text" name="middleName" placeholder="Cruz" />
                 </div>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>LAST NAME</label>
-                  <input className={styles.input} type="text" placeholder="Santos" />
+                  <input className={styles.input} type="text" name="lastName" placeholder="Santos" required />
                 </div>
               </div>
               <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>EMAIL</label>
+                  <input className={styles.input} type="email" name="email" placeholder="your@email.com" required />
+                </div>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>CONTACT NUMBER</label>
-                  <input className={styles.input} type="text" placeholder="09XX-XXX-XXXX" />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>PREFERRED ROOM TYPE</label>
-                  <select className={styles.input}>
-                    <option>No preference</option>
-                    <option>Single Room</option>
-                    <option>Double Room</option>
-                    <option>Suite Room</option>
-                  </select>
+                  <input className={styles.input} type="tel" name="phone" placeholder="09XX-XXX-XXXX" required />
                 </div>
               </div>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>PREFERRED CHECK-IN</label>
-                  <input className={styles.input} type="date" />
+                  <label className={styles.label}>PASSWORD</label>
+                  <input className={styles.input} type="password" name="password" placeholder="••••••••" required />
                 </div>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>INTENDED STAY (MONTHS)</label>
-                  <input className={styles.input} type="number" placeholder="6" min="1" />
+                  <label className={styles.label}>CONFIRM PASSWORD</label>
+                  <input className={styles.input} type="password" name="confirmPassword" placeholder="••••••••" required />
                 </div>
               </div>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>ADDITIONAL NOTES</label>
-                <textarea
-                  className={styles.textarea}
-                  placeholder="Any preferences or things the manager should know…"
-                  rows={4}
-                />
-              </div>
-              <button type="submit" className={styles.submitBtn}>
-                Create Account →
+              {registerError && <p style={{ color: '#842029', fontSize: '0.88rem', margin: 0 }}>{registerError}</p>}
+              <button type="submit" className={styles.submitBtn} disabled={registerLoading}>
+                {registerLoading ? 'Creating Account...' : 'Create Account →'}
               </button>
             </form>
           </div>

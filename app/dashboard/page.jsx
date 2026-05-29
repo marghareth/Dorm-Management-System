@@ -10,6 +10,7 @@ export default function DormerDashboard() {
   const [user, setUser]         = useState(null);
   const [bookings, setBookings] = useState([]);
   const [rooms, setRooms]       = useState([]);
+  const [loading, setLoading]   = useState(true);
 
   useEffect(() => {
     const stored = localStorage.getItem('user');
@@ -26,18 +27,34 @@ export default function DormerDashboard() {
     }
 
     setUser(u);
+    setLoading(true);
 
-    fetch(`/api/bookings?user_id=${u.userId}`)
+    const bookingPromise = fetch(`/api/bookings?user_id=${u.userId}`)
       .then(r => r.json())
       .then(d => setBookings(Array.isArray(d) ? d.map(row => ({ ...row, full_name: row.fname ? `${row.fname}${row.mname ? ' ' + row.mname : ''} ${row.lname}` : undefined, dormer_id: row.user_id })) : []))
       .catch(() => setBookings([]));
-    fetch('/api/rooms')
+
+    const roomPromise = fetch('/api/rooms')
       .then(r => r.json())
       .then(d => setRooms(Array.isArray(d) ? d.filter(r => r.status === 'available') : []))
       .catch(() => setRooms([]));
+
+    Promise.all([bookingPromise, roomPromise]).finally(() => setLoading(false));
   }, [router]);
 
-  if (!user) return null;
+  if (!user) {
+    return loading ? <div style={{ padding: '2rem', textAlign: 'center' }}>Loading dashboard…</div> : null;
+  }
+
+  if (loading) {
+    return (
+      <DashLayout role="dormer">
+        <div className={styles.page}>
+          <p style={{ padding: '2rem', textAlign: 'center' }}>Loading dashboard…</p>
+        </div>
+      </DashLayout>
+    );
+  }
 
   const bookingList = Array.isArray(bookings) ? bookings : [];
   const roomList = Array.isArray(rooms) ? rooms : [];

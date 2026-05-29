@@ -2,11 +2,12 @@ import { getSupabaseServer } from '@/lib/supabase';
 
 export async function GET(request, { params }) {
   try {
+    const { id } = await params;
     const supabase = getSupabaseServer();
     const { data, error } = await supabase
       .from('rooms')
       .select(`*, room_amenities(amenities(name))`)
-      .eq('room_id', params.id)
+      .eq('room_id', id)
       .maybeSingle();
 
     if (error) throw error;
@@ -24,12 +25,13 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
   try {
+    const { id } = await params;
     const supabase = getSupabaseServer();
     const { price, capacity, status } = await request.json();
     const { error } = await supabase
       .from('rooms')
       .update({ price, capacity, status })
-      .eq('room_id', params.id);
+      .eq('room_id', id);
 
     if (error) throw error;
     return Response.json({ message: 'Room updated successfully' });
@@ -41,8 +43,9 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
+    const { id } = await params;
     const supabase = getSupabaseServer();
-    const { error } = await supabase.from('rooms').delete().eq('room_id', params.id);
+    const { error } = await supabase.from('rooms').delete().eq('room_id', id);
     if (error) throw error;
     return Response.json({ message: 'Room deleted successfully' });
   } catch (error) {

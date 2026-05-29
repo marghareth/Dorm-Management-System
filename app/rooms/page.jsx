@@ -14,6 +14,7 @@ export default function RoomsPage() {
   const [floor, setFloor]     = useState('all');
   const [selected, setSelected] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token  = localStorage.getItem('token');
@@ -25,8 +26,13 @@ export default function RoomsPage() {
   }, [router]);
 
   const fetchRooms = (f) => {
+    setLoading(true);
     const url = f === 'all' ? '/api/rooms' : `/api/rooms?floor=${f}`;
-    fetch(url).then(r => r.json()).then(setRooms);
+    fetch(url)
+      .then(r => r.json())
+      .then(setRooms)
+      .catch(() => setRooms([]))
+      .finally(() => setLoading(false));
   };
 
   const handleFloor = (f) => { setFloor(f); fetchRooms(f); };
@@ -40,7 +46,19 @@ export default function RoomsPage() {
     setTimeout(() => setSuccess(false), 3500);
   };
 
-  if (!user) return null;
+  if (!user) {
+    return loading ? <div style={{ padding: '2rem', textAlign: 'center' }}>Loading rooms…</div> : null;
+  }
+
+  if (loading) {
+    return (
+      <DashLayout role="dormer">
+        <div className={styles.page}>
+          <p style={{ padding: '2rem', textAlign: 'center' }}>Loading rooms…</p>
+        </div>
+      </DashLayout>
+    );
+  }
 
   return (
     <DashLayout role="dormer">
