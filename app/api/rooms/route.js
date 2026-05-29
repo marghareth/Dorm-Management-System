@@ -28,3 +28,33 @@ export async function GET(request) {
     return Response.json({ message: 'Failed to fetch rooms' }, { status: 500 });
   }
 }
+
+export async function POST(request) {
+  try {
+    const supabase = getSupabaseServer();
+    const { roomNumber, type, floor, capacity, price, status } = await request.json();
+
+    if (!roomNumber || !type || !floor || !capacity || !price) {
+      return Response.json({ message: 'All fields are required' }, { status: 400 });
+    }
+
+    const { data, error } = await supabase
+      .from('rooms')
+      .insert({
+        room_number: roomNumber,
+        type,
+        floor: parseInt(floor),
+        capacity: parseInt(capacity),
+        price: parseFloat(price),
+        status: status || 'available',
+      })
+      .select('room_id')
+      .single();
+
+    if (error) throw error;
+    return Response.json({ message: 'Room added successfully', roomId: data.room_id }, { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return Response.json({ message: 'Failed to add room' }, { status: 500 });
+  }
+}
