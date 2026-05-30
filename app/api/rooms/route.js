@@ -1,4 +1,3 @@
-// app/api/rooms/route.js
 import { getSupabaseServer } from '@/lib/supabase';
 
 export async function GET(request) {
@@ -9,7 +8,7 @@ export async function GET(request) {
 
     let query = supabase
       .from('rooms')
-      .select(`*, room_amenities(amenities(name, description))`)
+      .select(`*, room_amenities(amenities(name))`)
       .order('floor')
       .order('room_number');
 
@@ -20,12 +19,7 @@ export async function GET(request) {
 
     const result = data.map(r => ({
       ...r,
-      amenities: r.room_amenities
-        ?.map(ra => ra.amenities
-          ? { name: ra.amenities.name, description: ra.amenities.description || '' }
-          : null
-        )
-        .filter(Boolean) || [],
+      amenities: r.room_amenities?.map(ra => ra.amenities?.name).filter(Boolean) || [],
     }));
 
     return Response.json(result);
@@ -49,10 +43,10 @@ export async function POST(request) {
       .insert({
         room_number: roomNumber,
         type,
-        floor:    parseInt(floor),
+        floor: parseInt(floor),
         capacity: parseInt(capacity),
-        price:    parseFloat(price),
-        status:   status || 'available',
+        price: parseFloat(price),
+        status: status || 'available',
       })
       .select('room_id')
       .single();

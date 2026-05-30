@@ -1,14 +1,12 @@
-// app/api/rooms/[id]/route.js
 import { getSupabaseServer } from '@/lib/supabase';
 
 export async function GET(request, { params }) {
   try {
     const { id } = await params;
     const supabase = getSupabaseServer();
-
     const { data, error } = await supabase
       .from('rooms')
-      .select(`*, room_amenities(amenities(name, description))`)
+      .select(`*, room_amenities(amenities(name))`)
       .eq('room_id', id)
       .maybeSingle();
 
@@ -17,12 +15,7 @@ export async function GET(request, { params }) {
 
     return Response.json({
       ...data,
-      amenities: data.room_amenities
-        ?.map(ra => ra.amenities
-          ? { name: ra.amenities.name, description: ra.amenities.description || '' }
-          : null
-        )
-        .filter(Boolean) || [],
+      amenities: data.room_amenities?.map(ra => ra.amenities?.name).filter(Boolean) || [],
     });
   } catch (error) {
     console.error(error);
@@ -35,7 +28,6 @@ export async function PUT(request, { params }) {
     const { id } = await params;
     const supabase = getSupabaseServer();
     const { price, capacity, status } = await request.json();
-
     const { error } = await supabase
       .from('rooms')
       .update({ price, capacity, status })
@@ -53,12 +45,7 @@ export async function DELETE(request, { params }) {
   try {
     const { id } = await params;
     const supabase = getSupabaseServer();
-
-    const { error } = await supabase
-      .from('rooms')
-      .delete()
-      .eq('room_id', id);
-
+    const { error } = await supabase.from('rooms').delete().eq('room_id', id);
     if (error) throw error;
     return Response.json({ message: 'Room deleted successfully' });
   } catch (error) {
@@ -66,6 +53,7 @@ export async function DELETE(request, { params }) {
     return Response.json({ message: 'Failed to delete room' }, { status: 500 });
   }
 }
+
 
 export async function POST(request) {
   try {
@@ -81,10 +69,10 @@ export async function POST(request) {
       .insert({
         room_number: roomNumber,
         type,
-        floor:    parseInt(floor),
+        floor: parseInt(floor),
         capacity: parseInt(capacity),
-        price:    parseFloat(price),
-        status:   status || 'available',
+        price: parseFloat(price),
+        status: status || 'available',
       })
       .select('room_id')
       .single();
