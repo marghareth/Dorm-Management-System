@@ -1,11 +1,9 @@
 'use client';
-import { useState } from 'react';
 import StatusBadge from './StatusBadge';
 import styles from './RoomCard.module.css';
 
 export default function RoomCard({ room, onBook }) {
   const isAvailable = room.status === 'available';
-  const [tooltip, setTooltip] = useState(null); // { name, description }
 
   return (
     <div className={styles.card}>
@@ -27,45 +25,11 @@ export default function RoomCard({ room, onBook }) {
           {room.type}
         </p>
 
-        {/* Amenity pills — click to see description */}
         {room.amenities && room.amenities.length > 0 && (
           <div className={styles.amenities}>
-            {room.amenities.map((a) => {
-              const name = typeof a === 'string' ? a : a.name;
-              const desc = typeof a === 'string' ? '' : a.description;
-              const isActive = tooltip?.name === name;
-              return (
-                <button
-                  key={name}
-                  type="button"
-                  className={`${styles.pill} ${isActive ? styles.pillActive : ''}`}
-                  onClick={() => setTooltip(isActive ? null : { name, description: desc })}
-                  aria-expanded={isActive}
-                >
-                  {name}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Amenity description popup */}
-        {tooltip && (
-          <div className={styles.amenityPopup}>
-            <div className={styles.amenityPopupHeader}>
-              <span className={styles.amenityPopupName}>{tooltip.name}</span>
-              <button
-                type="button"
-                className={styles.amenityPopupClose}
-                onClick={() => setTooltip(null)}
-                aria-label="Close"
-              >
-                ✕
-              </button>
-            </div>
-            <p className={styles.amenityPopupDesc}>
-              {tooltip.description || 'No description available.'}
-            </p>
+            {room.amenities.map((a) => (
+              <span key={a} className={styles.pill}>{a}</span>
+            ))}
           </div>
         )}
 
